@@ -22,7 +22,7 @@ namespace W3SavegameEditor.ChunkedLz4
                 fixed (byte* input = inputData)
                 fixed (byte* output = outputData)
                 {
-                    var bytesDecoded = LZ4PCL.LZ4Codec.Decode32(input, inputData.Length, output, outputData.Length, true);
+                    int bytesDecoded = LZ4PCL.LZ4Codec.Decode32(input, inputData.Length, output, outputData.Length, true);
                     Debug.Assert(bytesDecoded == DecompressedChunkSize);
                 }
 
