@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using W3SavegameEditor.ChunkedLz4;
 using W3SavegameEditor.Savegame;
 
 namespace W3SavegameEditor
@@ -99,11 +98,9 @@ namespace W3SavegameEditor
         private static void UnpackSaveFile(string inputSaveFilePath, string outputSaveFilePath)
         {
             using (var compressedInputStream = File.OpenRead(inputSaveFilePath))
-            using (var inputStream = ChunkedLz4File.Decompress(compressedInputStream))
-            using (var outputStream = File.OpenWrite(outputSaveFilePath))
+            //using (var outputStream = File.OpenWrite(outputSaveFilePath))
             {
-                var savegame = SavegameFile.Read(inputStream);
-
+                var savegame = SavegameFile.Read(compressedInputStream);
                 //inputStream.CopyTo(outputStream);
             }
         }

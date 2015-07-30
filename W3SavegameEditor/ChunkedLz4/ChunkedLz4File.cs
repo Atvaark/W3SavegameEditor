@@ -21,7 +21,7 @@ namespace W3SavegameEditor.ChunkedLz4
                 Debug.Assert(input.Position == chunk.EndOfChunkOffset || chunk.EndOfChunkOffset == 0);
             }
 
-            memoryStream.Position = 0;
+            memoryStream.Position = header.HeaderSize;
             return memoryStream;
         }
     }

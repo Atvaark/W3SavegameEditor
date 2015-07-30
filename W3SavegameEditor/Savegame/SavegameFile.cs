@@ -1,72 +1,81 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
+using W3SavegameEditor.ChunkedLz4;
+using W3SavegameEditor.Exceptions;
+using W3SavegameEditor.Savegame.VariableParsers;
 
 namespace W3SavegameEditor.Savegame
 {
+
     public class SavegameFile
     {
+        private class RbEntry
+        {
+            public short Size { get; set; }
+            public int Offset { get; set; }
+        }
+
+        /// <summary>
+        /// Flags that determine the size of certain values.
+        /// </summary>
+        private const int Flags = 0x1008002;
+
+        public int TypeCode1 { get; set; }
+        public int TypeCode2 { get; set; }
+        public int TypeCode3 { get; set; }
+
+        public long HeaderStartOffset { get; set; }
         public int VariableTableOffset { get; set; }
-        public SavegameVariableTableEntry[] VariableTableEntries { get; set; }
+        public int StringTableFooterOffset { get; set; }
+        public int StringTableOffset { get; set; }
+        public int RbSectionOffset { get; set; }
+        public int NmSectionOffset { get; set; }
+
+        public VariableTableEntry[] VariableTableEntries { get; set; }
         public string[] Strings { get; set; }
 
-        public static SavegameFile Read(Stream input)
+        public static SavegameFile Read(Stream compressedInputStream)
         {
-            using (var reader = new BinaryReader(input, Encoding.ASCII, true))
+            using (var inputStream = ChunkedLz4File.Decompress(compressedInputStream))
+            using (var reader = new BinaryReader(inputStream, Encoding.ASCII, true))
             {
                 var savegameFile = new SavegameFile();
+                savegameFile.ReadHeader(reader);
                 savegameFile.ReadFooter(reader);
+                savegameFile.ReadStringTable(reader);
                 savegameFile.ReadVariableTable(reader);
                 savegameFile.ReadVariables(reader);
-
-                //savegameFile.ReadHeader(reader);
-                //savegameFile.ReadVariables(reader);
-                savegameFile.ReadStringTable(reader);
                 return savegameFile;
             }
         }
 
         private void ReadVariables(BinaryReader reader)
         {
+            var parsers = new List<VariableParserBase>
+            {
+                new BrVariableParser(),
+                new BsVariableParser(),
+                new ManuVariableParser(),
+                new OpVariableParser(),
+                new SsVariableParser(),
+                new VlVariableParser()
+            };
+            var parser = new VariableParser(parsers);
+
             foreach (var tableEntry in VariableTableEntries)
             {
                 reader.BaseStream.Position = tableEntry.Offset;
-
-                string peek = reader.PeekString(2);
-
-                switch (peek)
+                try
                 {
-                    case "VL":
-                        // byte size2 = reader.ReadByte();
-                        // string value = reader.ReadString(size2 & 127);
-                        break;
-                    case "BS":
-                        // byte bsCode1 = reader.ReadByte();
-                        // byte bsCode2 = reader.ReadByte();
-                        // ReadVariable(reader);
-                        break;
-                    case "OP":
-                        // short opCode1 = reader.ReadInt16();
-                        // short opCode2 = reader.ReadInt16();
-                        // byte opCode3 = reader.ReadByte();
-                        // break;
-                        break;
-                    case "SS":
-                        break;
-                    case "BR":
-                        break;
-                    case "MA":
-                        if (reader.PeekString(4) == "MANU")
-                        {
-                            ReadStringTable(reader);
-                        }
-                        break;
-                    default:
-                        // int size1 = reader.ReadInt32();
-                        // reader.Skip(2*size1);
-                        break;
+                    parser.Parse(reader, tableEntry.Size);
                 }
-
+                catch (ParseVariableException e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
             }
         }
 
@@ -74,10 +83,10 @@ namespace W3SavegameEditor.Savegame
         {
             reader.BaseStream.Seek(VariableTableOffset, SeekOrigin.Begin);
             int entryCount = reader.ReadInt32();
-            SavegameVariableTableEntry[] entires = new SavegameVariableTableEntry[entryCount];
+            VariableTableEntry[] entires = new VariableTableEntry[entryCount];
             for (int i = 0; i < entryCount; i++)
             {
-                entires[i] = new SavegameVariableTableEntry
+                entires[i] = new VariableTableEntry
                 {
                     Offset = reader.ReadInt32(),
                     Size = reader.ReadInt32()
@@ -86,20 +95,27 @@ namespace W3SavegameEditor.Savegame
             VariableTableEntries = entires;
         }
 
-
         private void ReadFooter(BinaryReader reader)
         {
             reader.BaseStream.Seek(-6, SeekOrigin.End);
             VariableTableOffset = reader.ReadInt32();
+            StringTableFooterOffset = VariableTableOffset - 10;
             string magicNumber = reader.ReadString(2);
             if (magicNumber != "SE")
             {
                 throw new InvalidOperationException();
             }
         }
-        
+
         private void ReadStringTable(BinaryReader reader)
         {
+            reader.BaseStream.Position = StringTableFooterOffset;
+            NmSectionOffset = reader.ReadInt32();
+            RbSectionOffset = reader.ReadInt32();
+            ReadNmVariable(reader);
+            ReadRbVariable(reader);
+
+            reader.BaseStream.Position = StringTableOffset;
             string magicNumber = reader.ReadString(4);
             if (magicNumber != "MANU")
             {
@@ -123,60 +139,97 @@ namespace W3SavegameEditor.Savegame
             {
                 throw new InvalidOperationException();
             }
-
-            int nmVariableOffset = reader.ReadInt32();
-            int rbVariableOffset = reader.ReadInt32();
-
-            reader.BaseStream.Position = nmVariableOffset;
-            ReadNmVariable(reader);
-            reader.BaseStream.Position = rbVariableOffset;
-            ReadRbVariable(reader);
         }
 
         private void ReadNmVariable(BinaryReader reader)
         {
+            reader.BaseStream.Position = NmSectionOffset;
             string magicNumber = reader.ReadString(2);
             if (magicNumber != "NM")
             {
                 throw new InvalidOperationException();
             }
+            StringTableOffset = (int) reader.BaseStream.Position;
         }
 
         private void ReadRbVariable(BinaryReader reader)
         {
+            reader.BaseStream.Position = RbSectionOffset;
             string magicNumber = reader.ReadString(2);
             if (magicNumber != "RB")
             {
                 throw new InvalidOperationException();
             }
             int count = reader.ReadInt32();
+            RbEntry[] rbEntries = new RbEntry[count];
+            for (int i = 0; i < count; i++)
+            {
+                rbEntries[i] = new RbEntry
+                {
+                    Size = reader.ReadInt16(),
+                    Offset = reader.ReadInt32()
+                };
+            }
         }
-
+        
         private void ReadHeader(BinaryReader reader)
         {
+            HeaderStartOffset = reader.BaseStream.Position;
             string magicNumber = reader.ReadString(4);
             if (magicNumber != "SAV3")
             {
                 throw new InvalidOperationException();
             }
 
-            int typeCode1 = reader.ReadInt32();
-            if (typeCode1 != 53)
+            TypeCode1 = reader.ReadInt32();
+            if (TypeCode1 != 53)
             {
                 throw new InvalidOperationException();
             }
 
-            int typeCode2 = reader.ReadInt32();
-            if (typeCode2 != 9)
+            TypeCode2 = reader.ReadInt32();
+            if (TypeCode2 != 9)
             {
                 throw new InvalidOperationException();
             }
 
-            int typeCode3 = reader.ReadInt32();
-            if (typeCode3 != 162)
+            TypeCode3 = reader.ReadInt32();
+            if (TypeCode3 != 162)
             {
                 throw new InvalidOperationException();
             }
         }
+
+        //private byte[] ReadValue(BinaryReader reader)
+        //{
+        ////byte[] value = new byte[0];
+        ////if ((Flags & 1) > 0)
+        ////{
+        ////    value = reader.ReadBytes(2);
+        ////}
+        ////else
+        ////{
+        ////    if ((Flags & 2) > 0)
+        ////    {
+        ////        if (TypeCode1 >= 27)
+        ////        {
+        ////            value = reader.ReadBytes(2);
+        ////        }
+        ////        else
+        ////        {
+        ////            if ((Flags & 0x100000) > 0)
+        ////            {
+        ////                value = reader.ReadBytes(4);
+        ////                if ((Flags & 0x800000) > 0)
+        ////                {
+        ////                    // Lookup default value
+        ////                }
+        ////                // Read unicode string value
+        ////            }
+        ////        }
+        ////    }
+        ////}
+        ////return value;
+        //}
     }
 }
