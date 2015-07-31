@@ -14,7 +14,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             var magicNumber = reader.ReadString(MagicNumber.Length);
             if (magicNumber != MagicNumber)
             {
-                throw new ParseVariableException();
+                throw new ParseVariableException(string.Format("Read {0} while expecting {1}", magicNumber, MagicNumber));
             }
         }
     }

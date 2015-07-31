@@ -18,10 +18,19 @@ namespace W3SavegameEditor.Savegame
             public int Offset { get; set; }
         }
 
+        [Flags]
+        private enum SizeFlag
+        {
+            Unknown1 = 0x1,
+            Unknown2 = 0x2,
+            Unknown3 = 0x8000,
+            Unknown4= 0x1000000,
+        }
+
         /// <summary>
         /// Flags that determine the size of certain values.
         /// </summary>
-        private const int Flags = 0x1008002;
+        private const SizeFlag DefaultFlags = SizeFlag.Unknown2 | SizeFlag.Unknown3 | SizeFlag.Unknown4;
 
         public int TypeCode1 { get; set; }
         public int TypeCode2 { get; set; }
@@ -54,16 +63,18 @@ namespace W3SavegameEditor.Savegame
 
         private void ReadVariables(BinaryReader reader)
         {
+            var parser = new VariableParser();
             var parsers = new List<VariableParserBase>
             {
                 new BrVariableParser(),
-                new BsVariableParser(),
                 new ManuVariableParser(),
                 new OpVariableParser(),
                 new SsVariableParser(),
-                new VlVariableParser()
+                new VlVariableParser(),
+                new BsVariableParser(parser)
+
             };
-            var parser = new VariableParser(parsers);
+            parser.RegisterParsers(parsers);
 
             foreach (var tableEntry in VariableTableEntries)
             {
@@ -202,34 +213,34 @@ namespace W3SavegameEditor.Savegame
 
         //private byte[] ReadValue(BinaryReader reader)
         //{
-        ////byte[] value = new byte[0];
-        ////if ((Flags & 1) > 0)
-        ////{
-        ////    value = reader.ReadBytes(2);
-        ////}
-        ////else
-        ////{
-        ////    if ((Flags & 2) > 0)
-        ////    {
-        ////        if (TypeCode1 >= 27)
-        ////        {
-        ////            value = reader.ReadBytes(2);
-        ////        }
-        ////        else
-        ////        {
-        ////            if ((Flags & 0x100000) > 0)
-        ////            {
-        ////                value = reader.ReadBytes(4);
-        ////                if ((Flags & 0x800000) > 0)
-        ////                {
-        ////                    // Lookup default value
-        ////                }
-        ////                // Read unicode string value
-        ////            }
-        ////        }
-        ////    }
-        ////}
-        ////return value;
+        //    byte[] value = new byte[0];
+        //    if (DefaultFlags.HasFlag(SizeFlag.Unknown1))
+        //    {
+        //        value = reader.ReadBytes(2);
+        //    }
+        //    else
+        //    {
+        //        if (DefaultFlags.HasFlag(SizeFlag.Unknown2))
+        //        {
+        //            if (TypeCode1 >= 27)
+        //            {
+        //                value = reader.ReadBytes(2);
+        //            }
+        //            else
+        //            {
+        //                if (DefaultFlags.HasFlag(SizeFlag.Unknown4))
+        //                {
+        //                    value = reader.ReadBytes(4);
+        //                    if (DefaultFlags.HasFlag(SizeFlag.Unknown3))
+        //                    {
+        //                        // Lookup default value
+        //                    }
+        //                    // Read unicode string value
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return value;
         //}
     }
 }

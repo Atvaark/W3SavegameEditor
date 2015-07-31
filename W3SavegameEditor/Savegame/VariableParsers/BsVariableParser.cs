@@ -4,7 +4,12 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 {
     public class BsVariableParser : VariableParserBase
     {
-        private readonly VlVariableParser _vlVariableParser = new VlVariableParser();
+        private readonly VariableParser _parser;
+
+        public BsVariableParser(VariableParser parser)
+        {
+            _parser = parser;
+        }
 
         public override string MagicNumber
         {
@@ -15,8 +20,8 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         {
             byte bsCode1 = reader.ReadByte();
             byte bsCode2 = reader.ReadByte();
-            _vlVariableParser.Verify(reader);
-            _vlVariableParser.Parse(reader, size - MagicNumber.Length - 2);
+
+            _parser.Parse(reader, MagicNumber.Length - 2);
         }
     }
 }

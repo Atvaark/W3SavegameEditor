@@ -35,8 +35,7 @@ namespace W3SavegameEditor
 
             return parsedArgs;
         }
-
-
+        
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -98,10 +97,12 @@ namespace W3SavegameEditor
         private static void UnpackSaveFile(string inputSaveFilePath, string outputSaveFilePath)
         {
             using (var compressedInputStream = File.OpenRead(inputSaveFilePath))
-            //using (var outputStream = File.OpenWrite(outputSaveFilePath))
+            //using (var inputStream = W3SavegameEditor.ChunkedLz4.ChunkedLz4File.Decompress(compressedInputStream))
+            using (var outputStream = File.OpenWrite(outputSaveFilePath))
             {
-                var savegame = SavegameFile.Read(compressedInputStream);
+                //inputStream.Position = 0;
                 //inputStream.CopyTo(outputStream);
+                var savegame = SavegameFile.Read(compressedInputStream);
             }
         }
     }

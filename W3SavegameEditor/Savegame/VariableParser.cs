@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Text;
 using W3SavegameEditor.Savegame.VariableParsers;
 
 namespace W3SavegameEditor.Savegame
@@ -10,11 +11,19 @@ namespace W3SavegameEditor.Savegame
     {
         private readonly Dictionary<string, VariableParserBase> _parsers;
 
-        public VariableParser(IEnumerable<VariableParserBase> parsers)
+        public VariableParser()
         {
-            _parsers = parsers.ToDictionary(p => p.MagicNumber, p => p);
+            _parsers = new Dictionary<string, VariableParserBase>();
         }
-
+        
+        public void RegisterParsers(IEnumerable<VariableParserBase> parsers)
+        {
+            foreach (var parser in parsers)
+            {
+                _parsers[parser.MagicNumber] = parser;
+            }
+        }
+        
         public void Parse(BinaryReader reader, int size)
         {
             string magicNumber = reader.PeekString(2);
@@ -27,11 +36,13 @@ namespace W3SavegameEditor.Savegame
             }
             else
             {
+                string hexMagicNumber = BitConverter.ToString(Encoding.ASCII.GetBytes(magicNumber));
+
                 Debug.WriteLine(
                     "Failed to parse {0} bytes of data at {1}. Magic number was {2}",
                     size,
                     reader.BaseStream.Position,
-                    magicNumber);
+                    hexMagicNumber);
             }
         }
     }
