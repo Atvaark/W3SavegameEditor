@@ -4,18 +4,21 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using W3SavegameEditor.Savegame.VariableParsers;
+using W3SavegameEditor.Savegame.Variables;
 
 namespace W3SavegameEditor.Savegame
 {
     public class VariableParser
     {
+        private readonly string[] _names;
         private readonly Dictionary<string, VariableParserBase> _parsers;
 
-        public VariableParser()
+        public VariableParser(string[] names)
         {
+            _names = names;
             _parsers = new Dictionary<string, VariableParserBase>();
         }
-        
+
         public void RegisterParsers(IEnumerable<VariableParserBase> parsers)
         {
             foreach (var parser in parsers)
@@ -24,7 +27,7 @@ namespace W3SavegameEditor.Savegame
             }
         }
         
-        public void Parse(BinaryReader reader, int size)
+        public VariableBase Parse(BinaryReader reader, int size)
         {
             string magicNumber = reader.PeekString(2);
 
@@ -32,7 +35,9 @@ namespace W3SavegameEditor.Savegame
             if (_parsers.TryGetValue(magicNumber, out parser))
             {
                 parser.Verify(reader);
-                parser.Parse(reader, size);
+                var variable = parser.Parse(reader, size);
+                variable.ResolveNames(_names);
+                return variable;
             }
             else
             {
@@ -43,6 +48,7 @@ namespace W3SavegameEditor.Savegame
                     size,
                     reader.BaseStream.Position,
                     hexMagicNumber);
+                return Variable.None;
             }
         }
     }

@@ -98,7 +98,7 @@ namespace W3SavegameEditor
         {
             using (var compressedInputStream = File.OpenRead(inputSaveFilePath))
             //using (var inputStream = W3SavegameEditor.ChunkedLz4.ChunkedLz4File.Decompress(compressedInputStream))
-            using (var outputStream = File.OpenWrite(outputSaveFilePath))
+            //using (var outputStream = File.OpenWrite(outputSaveFilePath))
             {
                 //inputStream.Position = 0;
                 //inputStream.CopyTo(outputStream);

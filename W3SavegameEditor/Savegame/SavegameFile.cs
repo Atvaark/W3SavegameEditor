@@ -6,6 +6,7 @@ using System.Text;
 using W3SavegameEditor.ChunkedLz4;
 using W3SavegameEditor.Exceptions;
 using W3SavegameEditor.Savegame.VariableParsers;
+using W3SavegameEditor.Savegame.Variables;
 
 namespace W3SavegameEditor.Savegame
 {
@@ -44,7 +45,7 @@ namespace W3SavegameEditor.Savegame
         public int NmSectionOffset { get; set; }
 
         public VariableTableEntry[] VariableTableEntries { get; set; }
-        public string[] Strings { get; set; }
+        public string[] VariableNames { get; set; }
 
         public static SavegameFile Read(Stream compressedInputStream)
         {
@@ -63,7 +64,7 @@ namespace W3SavegameEditor.Savegame
 
         private void ReadVariables(BinaryReader reader)
         {
-            var parser = new VariableParser();
+            var parser = new VariableParser(VariableNames);
             var parsers = new List<VariableParserBase>
             {
                 new BrVariableParser(),
@@ -76,12 +77,13 @@ namespace W3SavegameEditor.Savegame
             };
             parser.RegisterParsers(parsers);
 
-            foreach (var tableEntry in VariableTableEntries)
+            VariableBase[] variables = new VariableBase[VariableTableEntries.Length];
+            for (int i = 0; i < VariableTableEntries.Length; i++)
             {
-                reader.BaseStream.Position = tableEntry.Offset;
+                reader.BaseStream.Position = VariableTableEntries[i].Offset;
                 try
                 {
-                    parser.Parse(reader, tableEntry.Size);
+                    variables[i] = parser.Parse(reader, VariableTableEntries[i].Size);
                 }
                 catch (ParseVariableException e)
                 {
@@ -123,36 +125,22 @@ namespace W3SavegameEditor.Savegame
             reader.BaseStream.Position = StringTableFooterOffset;
             NmSectionOffset = reader.ReadInt32();
             RbSectionOffset = reader.ReadInt32();
-            ReadNmVariable(reader);
-            ReadRbVariable(reader);
-
-            reader.BaseStream.Position = StringTableOffset;
-            string magicNumber = reader.ReadString(4);
-            if (magicNumber != "MANU")
-            {
-                throw new InvalidOperationException();
-            }
-
-            int stringCount = reader.ReadInt32();
-            reader.Skip(4);
-
-            var strings = new string[stringCount];
-            for (int i = 0; i < stringCount; i++)
-            {
-                byte size = reader.ReadByte();
-                strings[i] = reader.ReadString(size);
-            }
-            Strings = strings;
-
-            reader.Skip(4);
-            string doneMagicNumber = reader.ReadString(4);
-            if (doneMagicNumber != "ENOD")
-            {
-                throw new InvalidOperationException();
-            }
+            ReadNmSection(reader);
+            ReadRbSection(reader);
+            ReadVariableNameSection(reader);
         }
 
-        private void ReadNmVariable(BinaryReader reader)
+        private void ReadVariableNameSection(BinaryReader reader)
+        {
+            reader.BaseStream.Position = StringTableOffset;
+            var manuVariableParser = new ManuVariableParser();
+            var manuVariableSize = StringTableFooterOffset - StringTableOffset;
+            manuVariableParser.Verify(reader);
+            var manuVariable = manuVariableParser.ParseImpl(reader, manuVariableSize);
+            VariableNames = manuVariable.Strings;
+        }
+
+        private void ReadNmSection(BinaryReader reader)
         {
             reader.BaseStream.Position = NmSectionOffset;
             string magicNumber = reader.ReadString(2);
@@ -163,7 +151,7 @@ namespace W3SavegameEditor.Savegame
             StringTableOffset = (int) reader.BaseStream.Position;
         }
 
-        private void ReadRbVariable(BinaryReader reader)
+        private void ReadRbSection(BinaryReader reader)
         {
             reader.BaseStream.Position = RbSectionOffset;
             string magicNumber = reader.ReadString(2);

@@ -54,7 +54,15 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Savegame\Variables\BsVariable.cs" />
+    <Compile Include="Savegame\Variables\ManuVariable.cs" />
+    <Compile Include="Savegame\Variables\OpVariable.cs" />
+    <Compile Include="Savegame\Variables\SsVariable.cs" />
+    <Compile Include="Savegame\Variables\VariableComposite.cs" />
     <Compile Include="Savegame\SavegameFile.cs" />
+    <Compile Include="Savegame\Variables\Variable.cs" />
+    <Compile Include="Savegame\Variables\VariableBase.cs" />
+    <Compile Include="Savegame\Variables\VlVariable.cs" />
     <Compile Include="Savegame\VariableTableEntry.cs" />
     <Compile Include="Savegame\VariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\BrVariableParser.cs" />

@@ -1,8 +1,9 @@
 ﻿using System.IO;
+using W3SavegameEditor.Savegame.Variables;
 
 namespace W3SavegameEditor.Savegame.VariableParsers
 {
-    public class BsVariableParser : VariableParserBase
+    public class BsVariableParser : VariableParserBase<BsVariable>
     {
         private readonly VariableParser _parser;
 
@@ -16,12 +17,17 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             get { return "BS"; }
         }
 
-        public override void Parse(BinaryReader reader, int size)
+        public override BsVariable ParseImpl(BinaryReader reader, int size)
         {
-            byte bsCode1 = reader.ReadByte();
-            byte bsCode2 = reader.ReadByte();
+            short nameStringIndex = reader.ReadInt16();
 
-            _parser.Parse(reader, MagicNumber.Length - 2);
+            var innerVariable = _parser.Parse(reader, MagicNumber.Length - sizeof(short));
+
+            return new BsVariable
+            {
+                NameStringIndex = nameStringIndex,
+                InnerVariable = innerVariable
+            };
         }
     }
 }

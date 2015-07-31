@@ -1,17 +1,18 @@
 ﻿using System.IO;
+using W3SavegameEditor.Savegame.Variables;
 
 namespace W3SavegameEditor.Savegame.VariableParsers
 {
-    public class BrVariableParser : VariableParserBase
+    public class BrVariableParser : VariableParserBase<Variable>
     {
         public override string MagicNumber
         {
             get { return "BR"; }
         }
 
-        public override void Parse(BinaryReader reader, int size)
+        public override Variable ParseImpl(BinaryReader reader, int size)
         {
-
+            return Variable.None;
         }
     }
 }
