@@ -65,13 +65,13 @@
     <Compile Include="Savegame\Variables\VlVariable.cs" />
     <Compile Include="Savegame\VariableTableEntry.cs" />
     <Compile Include="Savegame\VariableParser.cs" />
-    <Compile Include="Savegame\VariableParsers\BrVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\BsVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\ManuVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\OpVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\SsVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\VariableParserBase.cs" />
     <Compile Include="Savegame\VariableParsers\VlVariableParser.cs" />
+    <Compile Include="Savegame\VariableTypeMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

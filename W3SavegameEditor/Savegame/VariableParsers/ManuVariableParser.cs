@@ -39,13 +39,15 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             };
         }
 
-        public override void Verify(BinaryReader reader)
+        public override int Verify(BinaryReader reader)
         {
-            var magicNumber = reader.ReadString(FullMagicNumber.Length);
+            var bytesToRead = FullMagicNumber.Length;
+            var magicNumber = reader.ReadString(bytesToRead);
             if (magicNumber != FullMagicNumber)
             {
                 throw new ParseVariableException();
             }
+            return bytesToRead;
         }
     }
 }

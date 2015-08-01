@@ -23,6 +23,7 @@ namespace W3SavegameEditor.Savegame
         {
             foreach (var parser in parsers)
             {
+                parser.Names = _names;
                 _parsers[parser.MagicNumber] = parser;
             }
         }
@@ -34,9 +35,8 @@ namespace W3SavegameEditor.Savegame
             VariableParserBase parser;
             if (_parsers.TryGetValue(magicNumber, out parser))
             {
-                parser.Verify(reader);
-                var variable = parser.Parse(reader, size);
-                variable.ResolveNames(_names);
+                int headerSize = parser.Verify(reader);
+                var variable = parser.Parse(reader, size - headerSize);
                 return variable;
             }
             else
