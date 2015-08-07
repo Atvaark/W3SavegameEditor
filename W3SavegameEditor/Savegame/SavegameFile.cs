@@ -46,6 +46,7 @@ namespace W3SavegameEditor.Savegame
 
         public VariableTableEntry[] VariableTableEntries { get; set; }
         public string[] VariableNames { get; set; }
+        public VariableBase[] Variables { get; set; }
 
         public static SavegameFile Read(Stream compressedInputStream)
         {
@@ -88,7 +89,10 @@ namespace W3SavegameEditor.Savegame
                     Debug.WriteLine(e.Message);
                 }
             }
+
+            Variables = variables;
         }
+
 
         private void ReadVariableTable(BinaryReader reader)
         {
@@ -179,13 +183,13 @@ namespace W3SavegameEditor.Savegame
             }
 
             TypeCode1 = reader.ReadInt32();
-            if (TypeCode1 != 53)
+            if (TypeCode1 != 54)
             {
                 throw new InvalidOperationException();
             }
 
             TypeCode2 = reader.ReadInt32();
-            if (TypeCode2 != 9)
+            if (TypeCode2 != 10)
             {
                 throw new InvalidOperationException();
             }

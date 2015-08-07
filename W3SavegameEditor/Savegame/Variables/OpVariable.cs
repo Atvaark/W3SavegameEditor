@@ -2,6 +2,9 @@
 {
     public class OpVariable : VariableBase
     {
-         
+        public override string ToString()
+        {
+            return "OP " + base.ToString();
+        }
     }
 }

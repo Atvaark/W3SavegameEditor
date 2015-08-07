@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Savegame.Variables
+﻿using System.Diagnostics;
+
+namespace W3SavegameEditor.Savegame.Variables
 {
     public abstract class VariableBase
     {
@@ -7,6 +9,11 @@
         public VariableBase()
         {
             Name = "None";
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
     }
 }

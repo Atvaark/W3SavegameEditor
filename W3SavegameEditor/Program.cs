@@ -97,12 +97,12 @@ namespace W3SavegameEditor
         private static void UnpackSaveFile(string inputSaveFilePath, string outputSaveFilePath)
         {
             using (var compressedInputStream = File.OpenRead(inputSaveFilePath))
-            //using (var inputStream = W3SavegameEditor.ChunkedLz4.ChunkedLz4File.Decompress(compressedInputStream))
-            //using (var outputStream = File.OpenWrite(outputSaveFilePath))
+            ////using (var inputStream = ChunkedLz4.ChunkedLz4File.Decompress(compressedInputStream))
+            ////using (var outputStream = File.OpenWrite(outputSaveFilePath))
             {
-                //inputStream.Position = 0;
-                //inputStream.CopyTo(outputStream);
                 var savegame = SavegameFile.Read(compressedInputStream);
+                ////inputStream.Position = 0;
+                ////inputStream.CopyTo(outputStream);
             }
         }
     }

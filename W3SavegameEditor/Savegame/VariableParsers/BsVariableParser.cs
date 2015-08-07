@@ -20,7 +20,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         public override BsVariable ParseImpl(BinaryReader reader, int size)
         {
             short nameStringIndex = reader.ReadInt16();
-            string name = Names[nameStringIndex];
+            string name = Names[nameStringIndex - 1];
             var innerVariable = _parser.Parse(reader, size - sizeof(short));
 
             return new BsVariable
