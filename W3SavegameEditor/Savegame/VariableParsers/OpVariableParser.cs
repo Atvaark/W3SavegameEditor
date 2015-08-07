@@ -12,13 +12,20 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
         public override OpVariable ParseImpl(BinaryReader reader, int size)
         {
-            short nameStringIndex = reader.ReadInt16();
-            string name = Names[nameStringIndex - 1];
-            short opCode2 = reader.ReadInt16();
-            byte opCode3 = reader.ReadByte();
+            short nameIndex = reader.ReadInt16();
+            string name = Names[nameIndex - 1];
+
+            short typeIndex = reader.ReadInt16();
+            string type = Names[typeIndex - 1];
+
+            size -= 2 * sizeof(short);
+
+            ReadData(reader, type, ref size);
+
             return new OpVariable
             {
-                Name = name
+                Name = name,
+                Type = type
             };
         }
     }

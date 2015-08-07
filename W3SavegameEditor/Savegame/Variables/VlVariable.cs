@@ -1,5 +1,8 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
+    /// <summary>
+    /// A single variable
+    /// </summary>
     public class VlVariable : VariableBase
     {
         public string Type { get; set; }

@@ -183,22 +183,22 @@ namespace W3SavegameEditor.Savegame
             }
 
             TypeCode1 = reader.ReadInt32();
-            if (TypeCode1 != 54)
-            {
-                throw new InvalidOperationException();
-            }
+            //if (TypeCode1 != 54)
+            //{
+            //    throw new InvalidOperationException();
+            //}
 
             TypeCode2 = reader.ReadInt32();
-            if (TypeCode2 != 10)
-            {
-                throw new InvalidOperationException();
-            }
+            //if (TypeCode2 != 10)
+            //{
+            //    throw new InvalidOperationException();
+            //}
 
             TypeCode3 = reader.ReadInt32();
-            if (TypeCode3 != 162)
-            {
-                throw new InvalidOperationException();
-            }
+            //if (TypeCode3 != 162)
+            //{
+            //    throw new InvalidOperationException();
+            //}
         }
 
         //private byte[] ReadValue(BinaryReader reader)

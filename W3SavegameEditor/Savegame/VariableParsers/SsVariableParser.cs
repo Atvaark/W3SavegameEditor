@@ -14,9 +14,10 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         public override SsVariable ParseImpl(BinaryReader reader, int size)
         {
             int sizeInner = reader.ReadInt32();
-            Debug.Assert(size == sizeInner + 4);
             // TODO: Parse inner values
-
+            byte[] data = reader.ReadBytes(sizeInner);
+            size -= sizeInner;
+            
             return new SsVariable
             {
 

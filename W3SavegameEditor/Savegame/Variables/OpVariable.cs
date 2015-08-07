@@ -2,9 +2,11 @@
 {
     public class OpVariable : VariableBase
     {
+        public string Type { get; set; }
+
         public override string ToString()
         {
-            return "OP " + base.ToString();
+            return string.Format("OP {0} {1}", Type, base.ToString());
         }
     }
 }

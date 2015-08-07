@@ -1,5 +1,8 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
+    /// <summary>
+    /// A set of strings.
+    /// </summary>
     public class ManuVariable : VariableBase
     {
         public string[] Strings { get; set; }
