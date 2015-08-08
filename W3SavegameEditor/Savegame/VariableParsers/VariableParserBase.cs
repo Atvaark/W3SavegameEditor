@@ -173,8 +173,16 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                     }
                 case "TagList":
                     {
-                        byte value = reader.ReadByte();
+                        byte tagListHeader = reader.ReadByte();
                         size -= sizeof(byte);
+                        bool tagListFlag = (tagListHeader & 128) > 0;
+                        byte tagListCount = (byte)(tagListHeader & 127);
+                        short[] tagListEntries = new short[tagListCount];
+                        for (int i = 0; i < tagListCount; i++)
+                        {
+                            tagListEntries[i] = reader.ReadInt16(); // NameIndex?
+                        }
+                        size -= tagListCount * sizeof(short);
                         break;
                     }
                 case "SQuestThreadSuspensionData":

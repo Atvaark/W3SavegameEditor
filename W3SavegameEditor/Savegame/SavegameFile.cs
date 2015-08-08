@@ -70,9 +70,11 @@ namespace W3SavegameEditor.Savegame
             {
                 new ManuVariableParser(),
                 new OpVariableParser(),
-                new SsVariableParser(),
+                new SsVariableParser(parser),
                 new VlVariableParser(),
-                new BsVariableParser(parser)
+                new BsVariableParser(parser),
+                new BlckVariableParser(parser),
+                new AvalVariableParser()
             };
             parser.RegisterParsers(parsers);
 

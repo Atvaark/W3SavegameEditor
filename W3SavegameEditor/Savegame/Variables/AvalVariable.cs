@@ -1,10 +1,10 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public class OpVariable : TypedVariable
+    public class AvalVariable : TypedVariable
     {
         public override string ToString()
         {
-            return "OP " + base.ToString();
+            return "AVAL " + base.ToString();
         }
     }
 }

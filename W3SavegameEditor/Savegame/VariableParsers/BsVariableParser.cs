@@ -25,7 +25,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         {
             short nameStringIndex = reader.ReadInt16();
             string name = Names[nameStringIndex - 1];
-            
+
             size -= sizeof(short);
 
             // BUG: Huge sections (200000 bytes+) will cause a stackoverflow
@@ -47,6 +47,11 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             long debugLoopStartPos = reader.BaseStream.Position;
             while (size > 0)
             {
+                if (debugLoopStartPos == -1 && debugVariableIndex == -1)
+                {
+
+                }
+
                 long variableStartPosition = reader.BaseStream.Position;
                 var newVariable = _parser.Parse(reader, ref size);
                 if (newVariable.GetType() == typeof(UnknownVariable))
@@ -58,7 +63,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                 Debug.Assert(reader.BaseStream.Position != variableStartPosition);
                 debugVariableIndex++;
             }
-            
+
             return new BsVariable
             {
                 Name = name,

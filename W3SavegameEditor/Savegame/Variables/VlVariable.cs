@@ -3,14 +3,11 @@
     /// <summary>
     /// A single variable
     /// </summary>
-    public class VlVariable : VariableBase
+    public class VlVariable : TypedVariable
     {
-        public string Type { get; set; }
-
         public override string ToString()
         {
-            return string.Format("VL {0} {1}", Type, base.ToString());
+            return "VL " +  base.ToString();
         }
-
     }
 }

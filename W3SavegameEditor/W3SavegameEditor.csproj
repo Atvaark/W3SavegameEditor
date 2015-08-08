@@ -54,10 +54,15 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Savegame\VariableParsers\AvalVariableParser.cs" />
+    <Compile Include="Savegame\VariableParsers\BlckVariableParser.cs" />
+    <Compile Include="Savegame\Variables\AvalVariable.cs" />
+    <Compile Include="Savegame\Variables\BlckVariable.cs" />
     <Compile Include="Savegame\Variables\BsVariable.cs" />
     <Compile Include="Savegame\Variables\ManuVariable.cs" />
     <Compile Include="Savegame\Variables\OpVariable.cs" />
     <Compile Include="Savegame\Variables\SsVariable.cs" />
+    <Compile Include="Savegame\Variables\TypedVariable.cs" />
     <Compile Include="Savegame\Variables\VariableComposite.cs" />
     <Compile Include="Savegame\SavegameFile.cs" />
     <Compile Include="Savegame\Variables\UnknownVariable.cs" />
