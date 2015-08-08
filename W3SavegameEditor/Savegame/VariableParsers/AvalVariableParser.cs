@@ -33,7 +33,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             };
         }
 
-        public override int Verify(BinaryReader reader)
+        public override void Verify(BinaryReader reader, ref int size)
         {
             var bytesToRead = FullMagicNumber.Length;
             var magicNumber = reader.ReadString(bytesToRead);
@@ -46,7 +46,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                     reader.BaseStream.Position - 4));
             }
 
-            return bytesToRead;
+            size -= bytesToRead;
         }
     }
 }

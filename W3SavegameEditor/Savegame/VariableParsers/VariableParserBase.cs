@@ -8,17 +8,25 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 {
     public abstract class VariableParserBase
     {
+
         public string[] Names { get; set; }
 
         public abstract string MagicNumber { get; }
 
+        public abstract Type SupportedType { get; }
+
         public abstract VariableBase Parse(BinaryReader reader, ref int size);
 
-        public abstract int Verify(BinaryReader reader);
+        public abstract void Verify(BinaryReader reader, ref int size);
     }
 
     public abstract class VariableParserBase<T> : VariableParserBase where T : VariableBase
     {
+        public override Type SupportedType
+        {
+            get { return typeof(T); }
+        }
+
         public override VariableBase Parse(BinaryReader reader, ref int size)
         {
             return ParseImpl(reader, ref size);
@@ -26,7 +34,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
         public abstract T ParseImpl(BinaryReader reader, ref int size);
 
-        public override int Verify(BinaryReader reader)
+        public override void Verify(BinaryReader reader, ref int size)
         {
             var bytesToRead = MagicNumber.Length;
             var readMagicNumber = reader.ReadString(bytesToRead);
@@ -39,7 +47,8 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                     readMagicNumber,
                     reader.BaseStream.Position - bytesToRead));
             }
-            return bytesToRead;
+
+            size -= bytesToRead;
         }
 
         protected void ReadData(BinaryReader reader, string type, ref int size)

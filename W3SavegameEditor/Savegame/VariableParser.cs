@@ -11,12 +11,14 @@ namespace W3SavegameEditor.Savegame
     public class VariableParser
     {
         private readonly string[] _names;
-        private readonly Dictionary<string, VariableParserBase> _parsers;
+        private readonly Dictionary<string, VariableParserBase> _magicNumberToParserDictionary;
+        private readonly Dictionary<Type, VariableParserBase> _typeToParserDictionary;
 
         public VariableParser(string[] names)
         {
             _names = names;
-            _parsers = new Dictionary<string, VariableParserBase>();
+            _magicNumberToParserDictionary = new Dictionary<string, VariableParserBase>();
+            _typeToParserDictionary = new Dictionary<Type, VariableParserBase>();
         }
 
         public void RegisterParsers(IEnumerable<VariableParserBase> parsers)
@@ -24,19 +26,26 @@ namespace W3SavegameEditor.Savegame
             foreach (var parser in parsers)
             {
                 parser.Names = _names;
-                _parsers[parser.MagicNumber] = parser;
+                _magicNumberToParserDictionary[parser.MagicNumber] = parser;
+                _typeToParserDictionary[parser.SupportedType] = parser;
             }
         }
-        
+
+        public T Parse<T>(BinaryReader reader, ref int size) where T : VariableBase
+        {
+            var parser = _typeToParserDictionary[typeof (T)];
+            parser.Verify(reader, ref size);
+            return (T)parser.Parse(reader, ref size);
+        }
+
         public VariableBase Parse(BinaryReader reader, ref int size)
         {
             string magicNumber = reader.PeekString(2);
             
             VariableParserBase parser;
-            if (_parsers.TryGetValue(magicNumber, out parser))
+            if (_magicNumberToParserDictionary.TryGetValue(magicNumber, out parser))
             {
-                int headerSize = parser.Verify(reader);
-                size -= headerSize;
+                parser.Verify(reader, ref size);
                 var variable = parser.Parse(reader, ref size);
                 return variable;
             }

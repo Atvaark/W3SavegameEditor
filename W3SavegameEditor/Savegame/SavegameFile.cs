@@ -144,9 +144,8 @@ namespace W3SavegameEditor.Savegame
             reader.BaseStream.Position = StringTableOffset;
             var manuVariableParser = new ManuVariableParser();
             var manuVariableSize = StringTableFooterOffset - StringTableOffset;
-            var manuHeaderSize = manuVariableParser.Verify(reader);
-            var manuSize = manuVariableSize - manuHeaderSize;
-            var manuVariable = manuVariableParser.ParseImpl(reader, ref manuSize);
+            manuVariableParser.Verify(reader, ref manuVariableSize);
+            var manuVariable = manuVariableParser.ParseImpl(reader, ref manuVariableSize);
             VariableNames = manuVariable.Strings;
         }
 
