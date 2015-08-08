@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace W3SavegameEditor.Savegame.Variables
+﻿namespace W3SavegameEditor.Savegame.Variables
 {
     public abstract class VariableBase
     {

@@ -60,7 +60,7 @@
     <Compile Include="Savegame\Variables\SsVariable.cs" />
     <Compile Include="Savegame\Variables\VariableComposite.cs" />
     <Compile Include="Savegame\SavegameFile.cs" />
-    <Compile Include="Savegame\Variables\Variable.cs" />
+    <Compile Include="Savegame\Variables\UnknownVariable.cs" />
     <Compile Include="Savegame\Variables\VariableBase.cs" />
     <Compile Include="Savegame\Variables\VlVariable.cs" />
     <Compile Include="Savegame\VariableTableEntry.cs" />

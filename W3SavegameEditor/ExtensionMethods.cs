@@ -17,6 +17,14 @@ namespace W3SavegameEditor
             return value;
         }
 
+        public static byte PeekByte(this BinaryReader reader)
+        {
+            long position = reader.BaseStream.Position;
+            byte value = reader.ReadByte();
+            reader.BaseStream.Position = position;
+            return value;
+        }
+
         public static void Skip(this BinaryReader reader, int count)
         {
             reader.BaseStream.Position += count;

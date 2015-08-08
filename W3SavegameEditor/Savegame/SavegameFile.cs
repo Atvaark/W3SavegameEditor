@@ -82,11 +82,16 @@ namespace W3SavegameEditor.Savegame
                 reader.BaseStream.Position = VariableTableEntries[i].Offset;
                 try
                 {
-                    variables[i] = parser.Parse(reader, VariableTableEntries[i].Size);
+                    var size = VariableTableEntries[i].Size;
+                    variables[i] = parser.Parse(reader, ref size);
                 }
                 catch (ParseVariableException e)
                 {
                     Debug.WriteLine(e.Message);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
                 }
             }
 
@@ -138,7 +143,8 @@ namespace W3SavegameEditor.Savegame
             var manuVariableParser = new ManuVariableParser();
             var manuVariableSize = StringTableFooterOffset - StringTableOffset;
             var manuHeaderSize = manuVariableParser.Verify(reader);
-            var manuVariable = manuVariableParser.ParseImpl(reader, manuVariableSize - manuHeaderSize);
+            var manuSize = manuVariableSize - manuHeaderSize;
+            var manuVariable = manuVariableParser.ParseImpl(reader, ref manuSize);
             VariableNames = manuVariable.Strings;
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using W3SavegameEditor.Savegame.Variables;
 
 namespace W3SavegameEditor.Savegame.VariableParsers
@@ -12,7 +10,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             get { return "VL"; }
         }
 
-        public override VlVariable ParseImpl(BinaryReader reader, int size)
+        public override VlVariable ParseImpl(BinaryReader reader, ref int size)
         {
             short nameIndex = reader.ReadInt16();
             string name = Names[nameIndex - 1];

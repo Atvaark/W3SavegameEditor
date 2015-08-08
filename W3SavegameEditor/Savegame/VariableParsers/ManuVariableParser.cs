@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using W3SavegameEditor.Exceptions;
 using W3SavegameEditor.Savegame.Variables;
 
@@ -14,20 +13,23 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             get { return "MA"; }
         }
 
-        public override ManuVariable ParseImpl(BinaryReader reader, int size)
+        public override ManuVariable ParseImpl(BinaryReader reader, ref int size)
         {
             int stringCount = reader.ReadInt32();
-            reader.Skip(4);
+            int unknown1 = reader.ReadInt32();
+            size -= 2*sizeof (int);
 
             var strings = new string[stringCount];
             for (int i = 0; i < stringCount; i++)
             {
                 byte stringSize = reader.ReadByte();
                 strings[i] = reader.ReadString(stringSize);
+                size -= sizeof (byte) + stringSize;
             }
 
-            reader.Skip(4);
+            int unknown2 = reader.ReadInt32();
             string doneMagicNumber = reader.ReadString(4);
+            size -= sizeof (int) + 4;
             if (doneMagicNumber != "ENOD")
             {
                 throw new ParseVariableException();

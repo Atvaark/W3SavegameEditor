@@ -28,27 +28,34 @@ namespace W3SavegameEditor.Savegame
             }
         }
         
-        public VariableBase Parse(BinaryReader reader, int size)
+        public VariableBase Parse(BinaryReader reader, ref int size)
         {
             string magicNumber = reader.PeekString(2);
-
+            
             VariableParserBase parser;
             if (_parsers.TryGetValue(magicNumber, out parser))
             {
                 int headerSize = parser.Verify(reader);
-                var variable = parser.Parse(reader, size - headerSize);
+                size -= headerSize;
+                var variable = parser.Parse(reader, ref size);
                 return variable;
             }
             else
             {
                 string hexMagicNumber = BitConverter.ToString(Encoding.ASCII.GetBytes(magicNumber));
-
                 Debug.WriteLine(
                     "Failed to parse {0} bytes of data at {1}. Magic number was {2}",
                     size,
                     reader.BaseStream.Position,
                     hexMagicNumber);
-                return Variable.None;
+
+                var unknownVariable = new UnknownVariable
+                {
+                    Name = "Unknown",
+                    Data = reader.ReadBytes(size)
+                };
+                size = 0;
+                return unknownVariable;
             }
         }
     }

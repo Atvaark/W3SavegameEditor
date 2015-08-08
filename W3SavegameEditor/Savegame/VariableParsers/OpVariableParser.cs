@@ -10,7 +10,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             get { return "OP"; }
         }
 
-        public override OpVariable ParseImpl(BinaryReader reader, int size)
+        public override OpVariable ParseImpl(BinaryReader reader, ref int size)
         {
             short nameIndex = reader.ReadInt16();
             string name = Names[nameIndex - 1];

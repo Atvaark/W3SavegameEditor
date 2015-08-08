@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using LZ4PCL;
 
 namespace W3SavegameEditor.ChunkedLz4
 {
@@ -22,7 +23,7 @@ namespace W3SavegameEditor.ChunkedLz4
                 fixed (byte* input = inputData)
                 fixed (byte* output = outputData)
                 {
-                    int bytesDecoded = LZ4PCL.LZ4Codec.Decode32(input, inputData.Length, output, outputData.Length, true);
+                    int bytesDecoded = LZ4Codec.Decode32(input, inputData.Length, output, outputData.Length, true);
                     Debug.Assert(bytesDecoded == DecompressedChunkSize);
                 }
 
