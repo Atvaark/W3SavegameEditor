@@ -29,10 +29,15 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         public override int Verify(BinaryReader reader)
         {
             var bytesToRead = MagicNumber.Length;
-            var magicNumber = reader.ReadString(bytesToRead);
-            if (magicNumber != MagicNumber)
+            var readMagicNumber = reader.ReadString(bytesToRead);
+            if (readMagicNumber != MagicNumber)
             {
-                throw new ParseVariableException(string.Format("Read {0} while expecting {1}", magicNumber, MagicNumber));
+                throw new ParseVariableException(
+                    string.Format(
+                    "Expeced {0} but read {1} at {2}",
+                    MagicNumber,
+                    readMagicNumber,
+                    reader.BaseStream.Position - bytesToRead));
             }
             return bytesToRead;
         }

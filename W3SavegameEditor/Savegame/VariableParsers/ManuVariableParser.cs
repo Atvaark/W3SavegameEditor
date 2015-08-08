@@ -47,7 +47,11 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             var magicNumber = reader.ReadString(bytesToRead);
             if (magicNumber != FullMagicNumber)
             {
-                throw new ParseVariableException();
+                throw new ParseVariableException(
+                    string.Format(
+                    "Expeced MANU but read {0} at {1}",
+                    magicNumber,
+                    reader.BaseStream.Position - 4));
             }
             return bytesToRead;
         }

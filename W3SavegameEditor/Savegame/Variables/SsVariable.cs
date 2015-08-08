@@ -2,5 +2,9 @@
 {
     public class SsVariable : VariableBase
     {
+        public override string ToString()
+        {
+            return "SS " + base.ToString();
+        }
     }
 }
