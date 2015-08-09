@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using W3SavegameEditor.Exceptions;
 using W3SavegameEditor.Savegame.Variables;
 
@@ -28,30 +29,24 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             size -= 3 * sizeof(short);
 
             // TODO: Only read blckSize
-            VariableBase lastVariable = null;
-            long startPos = reader.BaseStream.Position;
-            if (startPos == 4007431)
-            {
-                
-            }
+            List<VariableBase> variables = new List<VariableBase>();
 
-            int i = 0;
+            VariableBase debugLastVariable = null;
+            long debugStartPos = reader.BaseStream.Position;
+            int debugIndex = 0;
             while (size > 0)
             {
-                lastVariable = _parser.Parse(reader, ref size);
-                i++;
-            }
+                var variable = _parser.Parse(reader, ref size);
+                variables.Add(variable);
 
-            if (size < 0)
-            {
-                
+                debugLastVariable = variable;
+                debugIndex++;
             }
-
-            reader.ReadBytes(size);
-            size = 0;
+            
             return new BlckVariable
             {
-                Name = "None"
+                Name = "None",
+                Variables = variables.ToArray()
             };
         }
 

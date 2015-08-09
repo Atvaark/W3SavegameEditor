@@ -24,12 +24,13 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             int unknown = reader.ReadInt32();
             size -= sizeof(int);
 
-            ReadData(reader, type, ref size);
+            var value = ReadValue(reader, type, ref size);
 
             return new AvalVariable
             {
                 Name = name,
-                Type = type
+                Type = type,
+                Value = value
             };
         }
 

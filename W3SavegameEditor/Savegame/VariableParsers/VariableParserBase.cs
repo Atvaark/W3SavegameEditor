@@ -2,13 +2,13 @@
 using System.IO;
 using System.Text;
 using W3SavegameEditor.Exceptions;
+using W3SavegameEditor.Savegame.Values;
 using W3SavegameEditor.Savegame.Variables;
 
 namespace W3SavegameEditor.Savegame.VariableParsers
 {
     public abstract class VariableParserBase
     {
-
         public string[] Names { get; set; }
 
         public abstract string MagicNumber { get; }
@@ -51,7 +51,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             size -= bytesToRead;
         }
 
-        protected void ReadData(BinaryReader reader, string type, ref int size)
+        protected VariableValue ReadValue(BinaryReader reader, string type, ref int size)
         {
             switch (type)
             {
@@ -73,14 +73,15 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                             byte stringLength = (byte)(headerByte & 127);
                             string value = reader.ReadString(stringLength);
                             size -= stringLength;
+                            return VariableValue<string>.Create(value);
                         }
                         else
                         {
                             // TODO: Analyze how this can be read.
                             byte[] unknown = reader.ReadBytes(size);
                             size = 0;
+                            return VariableValue<byte[]>.Create(unknown);
                         }
-                        break;
                     }
                 case "StringAnsi":
                     {
@@ -88,7 +89,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                         byte[] data = reader.ReadBytes(length);
                         size -= sizeof(byte) + length;
                         string value = Encoding.ASCII.GetString(data).TrimEnd(char.MinValue);
-                        break;
+                        return VariableValue<string>.Create(value);
                     }
                 case "CName":
                     {
@@ -100,79 +101,94 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                         }
 
                         var value = Names[cnameIndex - 1];
-                        break;
+                        return VariableValue<string>.Create(value);
                     }
                 case "CGUID":
                     {
                         var guidData = reader.ReadBytes(16);
                         size -= 16;
                         var value = new Guid(guidData);
-                        break;
+                        return VariableValue<Guid>.Create(value);
                     }
                 case "EngineTime":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(3);
                         size -= 3;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "GameTime":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(11);
                         size -= 11;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "EntityHandle":
                     {
                         // TODO: Analyze how this can be read.
                         byte unknown1 = reader.ReadByte();
                         size -= sizeof(byte);
+                        byte unknown2 = 0x00;
+                        byte[] unknown3 = null;
                         if (unknown1 > 0)
                         {
-                            byte unknown2 = reader.ReadByte();
-                            byte[] unknown3 = reader.ReadBytes(16);
+                            unknown2 = reader.ReadByte();
+                            unknown3 = reader.ReadBytes(16);
                             size -= 17 * sizeof(byte);
                         }
-                        break;
+
+                        var value = new EntityHandle
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                            Unknown3 = unknown3,
+                        };
+                        return VariableValue<EntityHandle>.Create(value);
                     }
                 case "SActionPointId":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(size);
                         size = 0;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "EAIAttitude":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(size);
                         size = 0;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
-                case "EJournalStatus":
                 case "eGwintFaction":
+                case "EJournalStatus":
                 case "EZoneName":
                 case "EDifficultyMode":
                     {
                         byte unknown1 = reader.ReadByte();
                         byte unknown2 = reader.ReadByte(); // Index
                         size -= 2 * sizeof(byte);
-                        break;
+
+                        var value = new W3Enum
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                        };
+                        return VariableValue<W3Enum>.Create(value);
                     }
                 case "Vector":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(35);
                         size -= 35;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "Vector2":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(19);
                         size -= 19;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "IdTag":
                     {
@@ -183,7 +199,16 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                         int unknown4 = reader.ReadInt32();
                         int unknown5 = reader.ReadInt32();
                         size -= 17;
-                        break;
+
+                        var value = new IdTag
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                            Unknown3 = unknown3,
+                            Unknown4 = unknown4,
+                            Unknown5 = unknown5,
+                        };
+                        return VariableValue<IdTag>.Create(value);
                     }
                 case "TagList":
                     {
@@ -197,28 +222,34 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                             tagListEntries[i] = reader.ReadInt16(); // NameIndex?
                         }
                         size -= tagListCount * sizeof(short);
-                        break;
+
+                        var value = new TagList
+                        {
+                            Flag = tagListFlag,
+                            Entities = tagListEntries
+                        };
+                        return VariableValue<TagList>.Create(value);
                     }
                 case "SQuestThreadSuspensionData":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(size);
                         size = 0;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "W3TutorialManagerUIHandler":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(size);
                         size = 0;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "W3EnvironmentManager":
                     {
                         // TODO: Analyze how this can be read.
                         byte[] unknown = reader.ReadBytes(19);
                         size -= 19;
-                        break;
+                        return VariableValue<byte[]>.Create(unknown);
                     }
                 case "CEntityTemplate":
                     {
@@ -239,91 +270,100 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                             byte stringLength = (byte)(headerByte & 127);
                             string value = reader.ReadString(stringLength);
                             size -= stringLength;
+                            return VariableValue<string>.Create(value);
                         }
                         else
                         {
                             // TODO: Analyze how this can be read.
                             byte[] unknown = reader.ReadBytes(size);
                             size = 0;
+                            return VariableValue<byte[]>.Create(unknown);
                         }
-                        break;
                     }
                 case "EulerAngles":
                     {
                         // TODO: Analyze how this can be read.
-                        byte[] unknown4 = reader.ReadBytes(3);
-                        double unknown1 = reader.ReadDouble();
+                        byte[] unknown1 = reader.ReadBytes(3);
                         double unknown2 = reader.ReadDouble();
                         double unknown3 = reader.ReadDouble();
-
+                        double unknown4 = reader.ReadDouble();
                         size -= 3 + 3 * sizeof(double);
-                        break;
+
+                        var value = new EulerAngles
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                            Unknown3 = unknown3,
+                            Unknown4 = unknown4,
+                        };
+                        return VariableValue<EulerAngles>.Create(value);
                     }
                 case "Bool":
                     {
                         bool value = reader.ReadBoolean();
                         size -= sizeof(bool);
-                        break;
+
+                        return VariableValue<bool>.Create(value);
                     }
                 case "Uint8":
                     {
                         byte value = reader.ReadByte();
                         size -= sizeof(byte);
-                        break;
+                        return VariableValue<byte>.Create(value);
                     }
                 case "Uint16":
                     {
                         ushort value = reader.ReadUInt16();
                         size -= sizeof(ushort);
-                        break;
+                        return VariableValue<ushort>.Create(value);
                     }
                 case "Uint32":
                     {
                         uint value = reader.ReadUInt32();
                         size -= sizeof(uint);
-                        break;
+                        return VariableValue<uint>.Create(value);
                     }
                 case "Uint64":
                     {
                         ulong value = reader.ReadUInt64();
                         size -= sizeof(ulong);
-                        break;
+                        return VariableValue<ulong>.Create(value);
                     }
                 case "Int8":
                     {
                         sbyte value = reader.ReadSByte();
                         size -= sizeof(sbyte);
-                        break;
+                        return VariableValue<sbyte>.Create(value);
                     }
                 case "Int16":
                     {
                         short value = reader.ReadInt16();
                         size -= sizeof(short);
-                        break;
+                        return VariableValue<short>.Create(value);
                     }
                 case "Int32":
                     {
                         int value = reader.ReadInt32();
                         size -= sizeof(int);
-                        break;
+                        return VariableValue<int>.Create(value);
                     }
                 case "Int64":
                     {
                         long value = reader.ReadInt64();
                         size -= sizeof(long);
-                        break;
+                        return VariableValue<long>.Create(value);
                     }
                 case "Double":
                     {
                         double value = reader.ReadDouble();
                         size -= sizeof(double);
-                        break;
+                        return VariableValue<double>.Create(value);
                     }
                 case "Float":
                     {
                         float value = reader.ReadSingle();
-                        size -= sizeof(double);
-                        break;
+                        size -= sizeof(float);
+                        return VariableValue<float>.Create(value);
                     }
                 default:
                     {
@@ -333,21 +373,26 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
                             int arrayLength = reader.ReadInt32();
                             size -= sizeof(int);
-
+                            
+                            var arrayValue = VariableArrayValue.Create(arrayLength);
                             for (int i = 0; i < arrayLength; i++)
                             {
-                                ReadData(reader, arrayElementType, ref size);
+                                arrayValue[i] = ReadValue(reader, arrayElementType, ref size);
                             }
+
+                            return arrayValue;
                         }
                         else if (type.StartsWith("handle:"))
                         {
                             var handleType = type.Substring("handle:".Length);
-                            ReadData(reader, handleType, ref size);
+                            var value = ReadValue(reader, handleType, ref size);
+                            return VariableHandleValue<object>.Create(value);
                         }
                         else if (type.StartsWith("soft:"))
                         {
                             var handleType = type.Substring("soft:".Length);
-                            ReadData(reader, handleType, ref size);
+                            var value = ReadValue(reader, handleType, ref size);
+                            return VariableSoftValue<object>.Create(value);
                         }
                         else
                         {
@@ -357,6 +402,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
             }
 
+            return null;
         }
     }
 }

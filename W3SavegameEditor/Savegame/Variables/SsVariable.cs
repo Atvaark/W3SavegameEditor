@@ -2,9 +2,12 @@
 {
     public class SsVariable : VariableBase
     {
+        public VariableBase Variable { get; set; }
+
         public override string ToString()
         {
-            return "SS " + base.ToString();
+            return string.Format("SS {0} {1}", base.ToString(), Variable);
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using W3SavegameEditor.Savegame.Variables;
 
@@ -25,10 +26,9 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         {
             short nameStringIndex = reader.ReadInt16();
             string name = Names[nameStringIndex - 1];
-
             size -= sizeof(short);
 
-            // BUG: Huge sections (200000 bytes+) will cause a stackoverflow
+            // HACK: Huge sections (200000 bytes+) will cause a stackoverflow
             switch (name)
             {
                 case "communities":
@@ -38,36 +38,40 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                     return new BsVariable
                     {
                         Name = name,
-                        InnerVariable = null
+                        Variables = new VariableBase[0]
                     };
             }
+
+            List<VariableBase> variables = new List<VariableBase>();
 
             VariableBase debugLastVariable = null;
             int debugVariableIndex = 0;
             long debugLoopStartPos = reader.BaseStream.Position;
             while (size > 0)
             {
+                // HACK: This is just for easy debugging.
                 if (debugLoopStartPos == -1 && debugVariableIndex == -1)
                 {
 
                 }
 
                 long variableStartPosition = reader.BaseStream.Position;
-                var newVariable = _parser.Parse(reader, ref size);
-                if (newVariable.GetType() == typeof(UnknownVariable))
+                var variable = _parser.Parse(reader, ref size);
+                variables.Add(variable);
+
+                if (variable.GetType() == typeof(UnknownVariable))
                 {
                     break;
                 }
-                debugLastVariable = newVariable;
-
-                Debug.Assert(reader.BaseStream.Position != variableStartPosition);
+                debugLastVariable = variable;
                 debugVariableIndex++;
+                Debug.Assert(reader.BaseStream.Position != variableStartPosition);
             }
 
             return new BsVariable
             {
                 Name = name,
-                InnerVariable = debugLastVariable
+                Variables = variables.ToArray()
             };
         }
     }

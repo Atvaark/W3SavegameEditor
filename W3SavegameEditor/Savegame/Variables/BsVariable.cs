@@ -1,6 +1,6 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public class BsVariable : VariableComposite
+    public class BsVariable : VariableSet
     {
         public override string ToString()
         {

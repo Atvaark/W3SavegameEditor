@@ -1,6 +1,6 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public class BlckVariable : VariableBase
+    public class BlckVariable : VariableSet
     {
         public override string ToString()
         {

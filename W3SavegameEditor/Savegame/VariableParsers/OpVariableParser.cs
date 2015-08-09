@@ -14,18 +14,17 @@ namespace W3SavegameEditor.Savegame.VariableParsers
         {
             short nameIndex = reader.ReadInt16();
             string name = Names[nameIndex - 1];
-
             short typeIndex = reader.ReadInt16();
             string type = Names[typeIndex - 1];
-
             size -= 2 * sizeof(short);
 
-            ReadData(reader, type, ref size);
+            var value = ReadValue(reader, type, ref size);
 
             return new OpVariable
             {
                 Name = name,
-                Type = type
+                Type = type,
+                Value = value
             };
         }
     }

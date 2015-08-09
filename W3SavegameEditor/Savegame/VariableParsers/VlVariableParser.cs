@@ -20,12 +20,13 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
             size -= 2 * sizeof(short);
 
-            ReadData(reader, type, ref size);
+            var value = ReadValue(reader, type, ref size);
 
             return new VlVariable
             {
                 Name = name,
-                Type = type
+                Type = type,
+                Value = value
             };
         }
     }

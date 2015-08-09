@@ -24,10 +24,11 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             size -= sizeof(int);
             
             ParseSxap(reader, ref size);
-            _parser.Parse(reader, ref size);
+            var variable =  _parser.Parse(reader, ref size);
             return new SsVariable
             {
-                Name = "None"
+                Name = "None",
+                Variable = variable
             };
         }
 
