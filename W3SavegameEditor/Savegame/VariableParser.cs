@@ -38,10 +38,10 @@ namespace W3SavegameEditor.Savegame
             return (T)parser.Parse(reader, ref size);
         }
 
+        [DebuggerHidden]
         public Variable Parse(BinaryReader reader, ref int size)
         {
             string magicNumber = reader.PeekString(2);
-            
             VariableParserBase parser;
             if (_magicNumberToParserDictionary.TryGetValue(magicNumber, out parser))
             {

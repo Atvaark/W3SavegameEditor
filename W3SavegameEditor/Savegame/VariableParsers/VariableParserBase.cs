@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using W3SavegameEditor.Exceptions;
@@ -27,6 +28,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             get { return typeof(T); }
         }
 
+        [DebuggerHidden]
         public override Variable Parse(BinaryReader reader, ref int size)
         {
             return ParseImpl(reader, ref size);
@@ -110,194 +112,6 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                         var value = new Guid(guidData);
                         return VariableValue<Guid>.Create(value);
                     }
-                case "EngineTime":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(3);
-                        size -= 3;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "GameTime":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(11);
-                        size -= 11;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "EntityHandle":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte unknown1 = reader.ReadByte();
-                        size -= sizeof(byte);
-                        byte unknown2 = 0x00;
-                        byte[] unknown3 = null;
-                        if (unknown1 > 0)
-                        {
-                            unknown2 = reader.ReadByte();
-                            unknown3 = reader.ReadBytes(16);
-                            size -= 17 * sizeof(byte);
-                        }
-
-                        var value = new EntityHandle
-                        {
-                            Unknown1 = unknown1,
-                            Unknown2 = unknown2,
-                            Unknown3 = unknown3,
-                        };
-                        return VariableValue<EntityHandle>.Create(value);
-                    }
-                case "SActionPointId":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(size);
-                        size = 0;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "EAIAttitude":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(size);
-                        size = 0;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "eGwintFaction":
-                case "EJournalStatus":
-                case "EZoneName":
-                case "EDifficultyMode":
-                    {
-                        byte unknown1 = reader.ReadByte();
-                        byte unknown2 = reader.ReadByte(); // Index
-                        size -= 2 * sizeof(byte);
-
-                        var value = new W3Enum
-                        {
-                            Unknown1 = unknown1,
-                            Unknown2 = unknown2,
-                        };
-                        return VariableValue<W3Enum>.Create(value);
-                    }
-                case "Vector":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(35);
-                        size -= 35;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "Vector2":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(19);
-                        size -= 19;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "IdTag":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte unknown1 = reader.ReadByte();
-                        int unknown2 = reader.ReadInt32();
-                        int unknown3 = reader.ReadInt32();
-                        int unknown4 = reader.ReadInt32();
-                        int unknown5 = reader.ReadInt32();
-                        size -= 17;
-
-                        var value = new IdTag
-                        {
-                            Unknown1 = unknown1,
-                            Unknown2 = unknown2,
-                            Unknown3 = unknown3,
-                            Unknown4 = unknown4,
-                            Unknown5 = unknown5,
-                        };
-                        return VariableValue<IdTag>.Create(value);
-                    }
-                case "TagList":
-                    {
-                        byte tagListHeader = reader.ReadByte();
-                        size -= sizeof(byte);
-                        bool tagListFlag = (tagListHeader & 128) > 0;
-                        byte tagListCount = (byte)(tagListHeader & 127);
-                        short[] tagListEntries = new short[tagListCount];
-                        for (int i = 0; i < tagListCount; i++)
-                        {
-                            tagListEntries[i] = reader.ReadInt16(); // NameIndex?
-                        }
-                        size -= tagListCount * sizeof(short);
-
-                        var value = new TagList
-                        {
-                            Flag = tagListFlag,
-                            Entities = tagListEntries
-                        };
-                        return VariableValue<TagList>.Create(value);
-                    }
-                case "SQuestThreadSuspensionData":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(size);
-                        size = 0;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "W3TutorialManagerUIHandler":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(size);
-                        size = 0;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "W3EnvironmentManager":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown = reader.ReadBytes(19);
-                        size -= 19;
-                        return VariableValue<byte[]>.Create(unknown);
-                    }
-                case "CEntityTemplate":
-                    {
-                        // Might just be the same format as "String"
-                        byte headerByte = reader.ReadByte();
-                        size -= sizeof(byte);
-
-                        bool encodedStringLength = (headerByte & 128) > 0;
-                        if (encodedStringLength)
-                        {
-                            // HACK: Sometimes a single byte has to be skipped
-                            if (reader.PeekByte() == 0x01)
-                            {
-                                reader.ReadByte();
-                                size -= sizeof(byte);
-                            }
-
-                            byte stringLength = (byte)(headerByte & 127);
-                            string value = reader.ReadString(stringLength);
-                            size -= stringLength;
-                            return VariableValue<string>.Create(value);
-                        }
-                        else
-                        {
-                            // TODO: Analyze how this can be read.
-                            byte[] unknown = reader.ReadBytes(size);
-                            size = 0;
-                            return VariableValue<byte[]>.Create(unknown);
-                        }
-                    }
-                case "EulerAngles":
-                    {
-                        // TODO: Analyze how this can be read.
-                        byte[] unknown1 = reader.ReadBytes(3);
-                        double unknown2 = reader.ReadDouble();
-                        double unknown3 = reader.ReadDouble();
-                        double unknown4 = reader.ReadDouble();
-                        size -= 3 + 3 * sizeof(double);
-
-                        var value = new EulerAngles
-                        {
-                            Unknown1 = unknown1,
-                            Unknown2 = unknown2,
-                            Unknown3 = unknown3,
-                            Unknown4 = unknown4,
-                        };
-                        return VariableValue<EulerAngles>.Create(value);
-                    }
                 case "Bool":
                     {
                         bool value = reader.ReadBoolean();
@@ -365,6 +179,210 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                         size -= sizeof(float);
                         return VariableValue<float>.Create(value);
                     }
+                case "Vector":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(35);
+                        size -= 35;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "Vector2":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(19);
+                        size -= 19;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "EulerAngles":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown1 = reader.ReadBytes(3);
+                        double unknown2 = reader.ReadDouble();
+                        double unknown3 = reader.ReadDouble();
+                        double unknown4 = reader.ReadDouble();
+                        size -= 3 + 3 * sizeof(double);
+
+                        var value = new EulerAngles
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                            Unknown3 = unknown3,
+                            Unknown4 = unknown4,
+                        };
+                        return VariableValue<EulerAngles>.Create(value);
+                    }
+                case "EngineTime":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(3);
+                        size -= 3;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "GameTime":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(11);
+                        size -= 11;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "EntityHandle":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte unknown1 = reader.ReadByte();
+                        size -= sizeof(byte);
+                        byte unknown2 = 0x00;
+                        byte[] unknown3 = null;
+                        if (unknown1 > 0)
+                        {
+                            unknown2 = reader.ReadByte();
+                            unknown3 = reader.ReadBytes(16);
+                            size -= 17 * sizeof(byte);
+                        }
+
+                        var value = new EntityHandle
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                            Unknown3 = unknown3,
+                        };
+                        return VariableValue<EntityHandle>.Create(value);
+                    }
+                case "IdTag":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte unknown1 = reader.ReadByte();
+                        int unknown2 = reader.ReadInt32();
+                        int unknown3 = reader.ReadInt32();
+                        int unknown4 = reader.ReadInt32();
+                        int unknown5 = reader.ReadInt32();
+                        size -= 17;
+
+                        var value = new IdTag
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                            Unknown3 = unknown3,
+                            Unknown4 = unknown4,
+                            Unknown5 = unknown5,
+                        };
+                        return VariableValue<IdTag>.Create(value);
+                    }
+                case "TagList":
+                    {
+                        byte tagListHeader = reader.ReadByte();
+                        size -= sizeof(byte);
+                        bool tagListFlag = (tagListHeader & 128) > 0;
+                        byte tagListCount = (byte)(tagListHeader & 127);
+                        short[] tagListEntries = new short[tagListCount];
+                        for (int i = 0; i < tagListCount; i++)
+                        {
+                            tagListEntries[i] = reader.ReadInt16(); // NameIndex?
+                        }
+                        size -= tagListCount * sizeof(short);
+
+                        var value = new TagList
+                        {
+                            Flag = tagListFlag,
+                            Entities = tagListEntries
+                        };
+                        return VariableValue<TagList>.Create(value);
+                    }
+                case "eGwintFaction":
+                case "EJournalStatus":
+                case "EZoneName":
+                case "EDifficultyMode":
+                    {
+                        byte unknown1 = reader.ReadByte();
+                        byte unknown2 = reader.ReadByte(); // Index?
+                        size -= 2 * sizeof(byte);
+
+                        var value = new W3Enum
+                        {
+                            Unknown1 = unknown1,
+                            Unknown2 = unknown2,
+                        };
+                        return VariableValue<W3Enum>.Create(value);
+                    }
+                case "W3EnvironmentManager":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(19);
+                        size -= 19;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "SQuestThreadSuspensionData":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(29);
+                        size -= 29;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "SActionPointId":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte unknown1 = reader.ReadByte();
+                        short unknown2 = reader.ReadInt16();
+                        size -= 3;
+
+                        byte[] unknown3 = new byte[0];
+                        if (unknown2 > 0)
+                        {
+                            unknown3 = reader.ReadBytes(40);
+                            size -= 40;
+                        }
+
+                        return VariableValue<byte[]>.Create(unknown3);
+                    }
+                case "EAIAttitude":
+                case "CPlayerInput":
+                case "EBehaviorGraph":
+                case "ESignType":
+                case "EVehicleSlot":
+                case "SBuffImmunity":
+                case "SGlossaryImageOverride":
+                case "SItemUniqueId":
+                case "SRewardMultiplier":
+                case "W3AbilityManager":
+                case "W3EffectManager":
+                case "W3LevelManager":
+                case "W3Reputation":
+                case "W3TutorialManagerUIHandler":
+                case "WeaponHolster":
+                    {
+                        // TODO: Analyze how this can be read.
+                        byte[] unknown = reader.ReadBytes(size);
+                        size = 0;
+                        return VariableValue<byte[]>.Create(unknown);
+                    }
+                case "CEntityTemplate":
+                    {
+                        // Might just be the same format as "String"
+                        byte headerByte = reader.ReadByte();
+                        size -= sizeof(byte);
+
+                        bool encodedStringLength = (headerByte & 128) > 0;
+                        if (encodedStringLength)
+                        {
+                            // HACK: Sometimes a single byte has to be skipped
+                            if (reader.PeekByte() == 0x01)
+                            {
+                                reader.ReadByte();
+                                size -= sizeof(byte);
+                            }
+
+                            byte stringLength = (byte)(headerByte & 127);
+                            string value = reader.ReadString(stringLength);
+                            size -= stringLength;
+                            return VariableValue<string>.Create(value);
+                        }
+                        else
+                        {
+                            // TODO: Analyze how this can be read.
+                            byte[] unknown = reader.ReadBytes(size);
+                            size = 0;
+                            return VariableValue<byte[]>.Create(unknown);
+                        }
+                    }
                 default:
                     {
                         if (type.StartsWith("array:2,0,"))
@@ -373,7 +391,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
                             int arrayLength = reader.ReadInt32();
                             size -= sizeof(int);
-                            
+
                             var arrayValue = VariableArrayValue.Create(arrayLength);
                             for (int i = 0; i < arrayLength; i++)
                             {
@@ -396,6 +414,10 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                         }
                         else
                         {
+                            Debug.WriteLine("Unknown type '{0}' bytes left to read {1}", type, size);
+                            byte[] unknown = reader.ReadBytes(size);
+                            size = 0;
+                            return VariableValue<byte[]>.Create(unknown);
                         }
                         break;
                     }

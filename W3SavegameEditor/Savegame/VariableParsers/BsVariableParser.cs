@@ -31,10 +31,11 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             // HACK: Huge sections (200000 bytes+) will cause a stackoverflow
             switch (name)
             {
+                case "CJournalManager":
+                case "JActiveEntries":
                 case "communities":
                 case "community":
-                case "JActiveEntries":
-                case "CJournalManager":
+                case "stubs":
                     return new BsVariable
                     {
                         Name = name,
@@ -43,14 +44,13 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             }
 
             List<Variable> variables = new List<Variable>();
-
             Variable debugLastVariable = null;
             int debugVariableIndex = 0;
             long debugLoopStartPos = reader.BaseStream.Position;
             while (size > 0)
             {
                 // HACK: This is just for easy debugging.
-                if (debugLoopStartPos == -1 && debugVariableIndex == -1)
+                if (debugLoopStartPos == 0 && debugVariableIndex == 0)
                 {
 
                 }

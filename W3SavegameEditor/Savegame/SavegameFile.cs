@@ -74,7 +74,8 @@ namespace W3SavegameEditor.Savegame
                 new VlVariableParser(),
                 new BsVariableParser(parser),
                 new BlckVariableParser(parser),
-                new AvalVariableParser()
+                new AvalVariableParser(),
+                new PorpVariableParser()
             };
             parser.RegisterParsers(parsers);
 
