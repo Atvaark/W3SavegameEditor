@@ -31,14 +31,14 @@ namespace W3SavegameEditor.Savegame
             }
         }
 
-        public T Parse<T>(BinaryReader reader, ref int size) where T : VariableBase
+        public T Parse<T>(BinaryReader reader, ref int size) where T : Variable
         {
             var parser = _typeToParserDictionary[typeof (T)];
             parser.Verify(reader, ref size);
             return (T)parser.Parse(reader, ref size);
         }
 
-        public VariableBase Parse(BinaryReader reader, ref int size)
+        public Variable Parse(BinaryReader reader, ref int size)
         {
             string magicNumber = reader.PeekString(2);
             

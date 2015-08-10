@@ -1,6 +1,6 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public class UnknownVariable : VariableBase
+    public class UnknownVariable : Variable
     {
         public static readonly UnknownVariable None = new UnknownVariable { Name = "None" };
 

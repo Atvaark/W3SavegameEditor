@@ -1,8 +1,8 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public class VariableSet : VariableBase
+    public class VariableSet : Variable
     {
-        public VariableBase[] Variables { get; set; }
+        public Variable[] Variables { get; set; }
 
         public override string ToString()
         {

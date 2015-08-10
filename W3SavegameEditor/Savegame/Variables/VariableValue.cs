@@ -2,12 +2,12 @@
 {
     public abstract class VariableValue
     {
-        public abstract object BaseValue { get; }
+        public abstract object Object { get; }
     }
 
     public class VariableValue<T> : VariableValue
     {
-        public override object BaseValue
+        public override object Object
         {
             get { return Value; }
         }
@@ -60,7 +60,7 @@
             get { return Value.Length; }
         }
 
-        public override object BaseValue
+        public override object Object
         {
             get { return Value; }
         }

@@ -38,13 +38,13 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                     return new BsVariable
                     {
                         Name = name,
-                        Variables = new VariableBase[0]
+                        Variables = new Variable[0]
                     };
             }
 
-            List<VariableBase> variables = new List<VariableBase>();
+            List<Variable> variables = new List<Variable>();
 
-            VariableBase debugLastVariable = null;
+            Variable debugLastVariable = null;
             int debugVariableIndex = 0;
             long debugLoopStartPos = reader.BaseStream.Position;
             while (size > 0)

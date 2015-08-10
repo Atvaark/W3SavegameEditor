@@ -3,7 +3,7 @@
     /// <summary>
     /// A set of strings.
     /// </summary>
-    public class ManuVariable : VariableBase
+    public class ManuVariable : Variable
     {
         public string[] Strings { get; set; }
         public override string ToString()

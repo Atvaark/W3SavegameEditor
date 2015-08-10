@@ -23,15 +23,16 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
         public override BlckVariable ParseImpl(BinaryReader reader, ref int size)
         {
-            ushort unknown1 = reader.ReadUInt16();
+            ushort nameIndex = reader.ReadUInt16();
+            string name = Names[nameIndex - 1];
             ushort blckSize = reader.ReadUInt16();
             ushort unknown3 = reader.ReadUInt16();
             size -= 3 * sizeof(short);
 
             // TODO: Only read blckSize
-            List<VariableBase> variables = new List<VariableBase>();
+            List<Variable> variables = new List<Variable>();
 
-            VariableBase debugLastVariable = null;
+            Variable debugLastVariable = null;
             long debugStartPos = reader.BaseStream.Position;
             int debugIndex = 0;
             while (size > 0)
@@ -45,7 +46,7 @@ namespace W3SavegameEditor.Savegame.VariableParsers
             
             return new BlckVariable
             {
-                Name = "None",
+                Name = name,
                 Variables = variables.ToArray()
             };
         }

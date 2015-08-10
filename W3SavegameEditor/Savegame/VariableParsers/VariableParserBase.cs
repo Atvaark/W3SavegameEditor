@@ -15,19 +15,19 @@ namespace W3SavegameEditor.Savegame.VariableParsers
 
         public abstract Type SupportedType { get; }
 
-        public abstract VariableBase Parse(BinaryReader reader, ref int size);
+        public abstract Variable Parse(BinaryReader reader, ref int size);
 
         public abstract void Verify(BinaryReader reader, ref int size);
     }
 
-    public abstract class VariableParserBase<T> : VariableParserBase where T : VariableBase
+    public abstract class VariableParserBase<T> : VariableParserBase where T : Variable
     {
         public override Type SupportedType
         {
             get { return typeof(T); }
         }
 
-        public override VariableBase Parse(BinaryReader reader, ref int size)
+        public override Variable Parse(BinaryReader reader, ref int size)
         {
             return ParseImpl(reader, ref size);
         }

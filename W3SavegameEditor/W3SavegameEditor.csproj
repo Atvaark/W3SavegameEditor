@@ -71,7 +71,7 @@
     <Compile Include="Savegame\Variables\VariableSet.cs" />
     <Compile Include="Savegame\SavegameFile.cs" />
     <Compile Include="Savegame\Variables\UnknownVariable.cs" />
-    <Compile Include="Savegame\Variables\VariableBase.cs" />
+    <Compile Include="Savegame\Variables\Variable.cs" />
     <Compile Include="Savegame\Variables\VariableValue.cs" />
     <Compile Include="Savegame\Variables\VlVariable.cs" />
     <Compile Include="Savegame\VariableTableEntry.cs" />

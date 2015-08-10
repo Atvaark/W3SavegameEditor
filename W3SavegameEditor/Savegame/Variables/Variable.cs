@@ -1,10 +1,10 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public abstract class VariableBase
+    public abstract class Variable
     {
         public string Name { get; set; }
 
-        public VariableBase()
+        public Variable()
         {
             Name = "None";
         }

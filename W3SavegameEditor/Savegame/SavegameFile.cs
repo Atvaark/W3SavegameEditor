@@ -46,7 +46,7 @@ namespace W3SavegameEditor.Savegame
 
         public VariableTableEntry[] VariableTableEntries { get; set; }
         public string[] VariableNames { get; set; }
-        public VariableBase[] Variables { get; set; }
+        public Variable[] Variables { get; set; }
 
         public static SavegameFile Read(Stream compressedInputStream)
         {
@@ -78,7 +78,7 @@ namespace W3SavegameEditor.Savegame
             };
             parser.RegisterParsers(parsers);
 
-            VariableBase[] variables = new VariableBase[VariableTableEntries.Length];
+            Variable[] variables = new Variable[VariableTableEntries.Length];
             for (int i = 0; i < VariableTableEntries.Length; i++)
             {
                 reader.BaseStream.Position = VariableTableEntries[i].Offset;
@@ -99,8 +99,7 @@ namespace W3SavegameEditor.Savegame
 
             Variables = variables;
         }
-
-
+        
         private void ReadVariableTable(BinaryReader reader)
         {
             reader.BaseStream.Seek(VariableTableOffset, SeekOrigin.Begin);
@@ -128,7 +127,7 @@ namespace W3SavegameEditor.Savegame
                 throw new InvalidOperationException();
             }
         }
-
+        
         private void ReadStringTable(BinaryReader reader)
         {
             reader.BaseStream.Position = StringTableFooterOffset;

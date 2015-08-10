@@ -1,6 +1,6 @@
 ﻿namespace W3SavegameEditor.Savegame.Variables
 {
-    public class TypedVariable : VariableBase
+    public class TypedVariable : Variable
     {
         public string Type { get; set; }
         public VariableValue Value { get; set; }
