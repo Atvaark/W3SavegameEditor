@@ -118,8 +118,16 @@ namespace W3SavegameEditor.ViewModels
 
         private void ExecuteOpenSavegame(object parameter)
         {
+            if (parameter == null)
+            {
+                return;
+            }
+
             var savegame = parameter as SavegameModel;
-            if (savegame == null) throw new ArgumentNullException("parameter");
+            if (savegame == null)
+            {
+                throw new ArgumentException("parameter");
+            }
 
             SavegameFile.ReadAsync(savegame.Path, new OpenSavegameProgress(this))
                 .ContinueWith(t =>
