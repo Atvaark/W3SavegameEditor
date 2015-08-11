@@ -1,0 +1,63 @@
+﻿<controls:MetroWindow 
+        x:Class="W3SavegameEditor.Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:viewModels="clr-namespace:W3SavegameEditor.Gui.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        Title="W3SavegameEditor"
+        Height="520"
+        Width="800">
+    <controls:MetroWindow.DataContext>
+        <viewModels:SavegameViewModel/>
+    </controls:MetroWindow.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="19*"/>
+            <RowDefinition Height="214*"/>
+            <RowDefinition Height="12*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150*"/>
+            <ColumnDefinition Width="240*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding InitializeSavegames, Mode=OneWay}" />
+        <DataGrid Name="SavegameGrid" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Height="408" Width="285" Margin="10,10,0,0" ItemsSource="{Binding Savegames}" AutoGenerateColumns="False" SelectionMode="Single" SelectedItem="{Binding SelectedSavegame}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" ClipboardContentBinding="{x:Null}" Header="Name" CanUserResize="False" IsReadOnly="True"/>
+            </DataGrid.Columns>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding OpenSavegame}" CommandParameter="{Binding ElementName=SavegameGrid, Path=SelectedItem}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </DataGrid>
+        <TabControl Grid.Column="1" HorizontalAlignment="Left" Height="467" Grid.RowSpan="3" VerticalAlignment="Top" Width="477" DataContext="{Binding SelectedSavegame}">
+            <TabItem Header="Info" HorizontalAlignment="Left" Width="58">
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <Label  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="245" Text="{Binding Name}"/>
+                    <Label Content="Version" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version1, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="197,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version2, Mode=OneWay}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="1.641,0.422"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="322,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version3, Mode=OneWay}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="1.641,0.422"/>
+                    <Label Content="Names" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,72,0,0" TextWrapping="Wrap" Text="{Binding Data.VariableNames.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
+                    <Label Content="Variables" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,103,0,0" TextWrapping="Wrap" Text="{Binding Data.Variables.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Variables">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="398" Width="447" ItemsSource="{Binding Data.Variables}" AutoGenerateColumns="False" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Name}"  Header="Name"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <controls:MetroProgressBar  Grid.Column="1" HorizontalAlignment="Left" Margin="5,1,0,0" Grid.Row="2" VerticalAlignment="Top" Width="467" Height="18" Maximum="{Binding ProgressMax}" Value="{Binding ProgressValue}" Style="{DynamicResource MetroProgressBar}"/>
+    </Grid>
+</controls:MetroWindow>

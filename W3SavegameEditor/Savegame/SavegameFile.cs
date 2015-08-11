@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using W3SavegameEditor.ChunkedLz4;
 using W3SavegameEditor.Exceptions;
 using W3SavegameEditor.Savegame.VariableParsers;
@@ -25,7 +27,7 @@ namespace W3SavegameEditor.Savegame
             Unknown1 = 0x1,
             Unknown2 = 0x2,
             Unknown3 = 0x8000,
-            Unknown4= 0x1000000,
+            Unknown4 = 0x1000000,
         }
 
         /// <summary>
@@ -48,22 +50,36 @@ namespace W3SavegameEditor.Savegame
         public string[] VariableNames { get; set; }
         public Variable[] Variables { get; set; }
 
-        public static SavegameFile Read(Stream compressedInputStream)
+        public static Task<SavegameFile> ReadAsync(
+            string path,
+            IProgress<Tuple<long, long>> progress = null)
         {
+            return Task.Run(() => Read(path, progress));
+        }
+
+        public static SavegameFile Read(
+            string path,
+            IProgress<Tuple<long, long>> progress = null)
+        {
+
+            using (var compressedInputStream = File.OpenRead(path))
             using (var inputStream = ChunkedLz4File.Decompress(compressedInputStream))
             using (var reader = new BinaryReader(inputStream, Encoding.ASCII, true))
             {
                 var savegameFile = new SavegameFile();
+                if (progress != null) progress.Report(new Tuple<long, long>(0, 1));
                 savegameFile.ReadHeader(reader);
                 savegameFile.ReadFooter(reader);
                 savegameFile.ReadStringTable(reader);
                 savegameFile.ReadVariableTable(reader);
-                savegameFile.ReadVariables(reader);
+
+                if (progress != null) progress.Report(new Tuple<long, long>(0, savegameFile.VariableTableEntries.Length));
+                savegameFile.ReadVariables(reader, progress);
                 return savegameFile;
             }
         }
 
-        private void ReadVariables(BinaryReader reader)
+        private void ReadVariables(BinaryReader reader, IProgress<Tuple<long, long>> progress)
         {
             var parser = new VariableParser(VariableNames);
             var parsers = new List<VariableParserBase>
@@ -96,11 +112,13 @@ namespace W3SavegameEditor.Savegame
                 {
                     Debug.WriteLine(ex);
                 }
+
+                if (i % 250 == 0 && progress != null) progress.Report(new Tuple<long, long>(i, VariableTableEntries.Length));
             }
 
             Variables = variables;
         }
-        
+
         private void ReadVariableTable(BinaryReader reader)
         {
             reader.BaseStream.Seek(VariableTableOffset, SeekOrigin.Begin);
@@ -128,7 +146,7 @@ namespace W3SavegameEditor.Savegame
                 throw new InvalidOperationException();
             }
         }
-        
+
         private void ReadStringTable(BinaryReader reader)
         {
             reader.BaseStream.Position = StringTableFooterOffset;
@@ -157,7 +175,7 @@ namespace W3SavegameEditor.Savegame
             {
                 throw new InvalidOperationException();
             }
-            StringTableOffset = (int) reader.BaseStream.Position;
+            StringTableOffset = (int)reader.BaseStream.Position;
         }
 
         private void ReadRbSection(BinaryReader reader)
@@ -179,7 +197,7 @@ namespace W3SavegameEditor.Savegame
                 };
             }
         }
-        
+
         private void ReadHeader(BinaryReader reader)
         {
             HeaderStartOffset = reader.BaseStream.Position;
@@ -207,37 +225,5 @@ namespace W3SavegameEditor.Savegame
             //    throw new InvalidOperationException();
             //}
         }
-
-        //private byte[] ReadValue(BinaryReader reader)
-        //{
-        //    byte[] value = new byte[0];
-        //    if (DefaultFlags.HasFlag(SizeFlag.Unknown1))
-        //    {
-        //        value = reader.ReadBytes(2);
-        //    }
-        //    else
-        //    {
-        //        if (DefaultFlags.HasFlag(SizeFlag.Unknown2))
-        //        {
-        //            if (TypeCode1 >= 27)
-        //            {
-        //                value = reader.ReadBytes(2);
-        //            }
-        //            else
-        //            {
-        //                if (DefaultFlags.HasFlag(SizeFlag.Unknown4))
-        //                {
-        //                    value = reader.ReadBytes(4);
-        //                    if (DefaultFlags.HasFlag(SizeFlag.Unknown3))
-        //                    {
-        //                        // Lookup default value
-        //                    }
-        //                    // Read unicode string value
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return value;
-        //}
     }
 }

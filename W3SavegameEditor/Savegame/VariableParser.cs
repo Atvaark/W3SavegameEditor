@@ -51,12 +51,12 @@ namespace W3SavegameEditor.Savegame
             }
             else
             {
-                string hexMagicNumber = BitConverter.ToString(Encoding.ASCII.GetBytes(magicNumber));
-                Debug.WriteLine(
-                    "Failed to parse {0} bytes of data at {1}. Magic number was {2}",
-                    size,
-                    reader.BaseStream.Position,
-                    hexMagicNumber);
+                //string hexMagicNumber = BitConverter.ToString(Encoding.ASCII.GetBytes(magicNumber));
+                //Debug.WriteLine(
+                //    "Failed to parse {0} bytes of data at {1}. Magic number was {2}",
+                //    size,
+                //    reader.BaseStream.Position,
+                //    hexMagicNumber);
 
                 var unknownVariable = new UnknownVariable
                 {

@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "W3SavegameEditor", "W3SavegameEditor\W3SavegameEditor.csproj", "{9C026DA7-481D-43C6-8C18-635D69FDB423}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "W3SavegameEditor.Gui", "W3SavegameEditor.Gui\W3SavegameEditor.Gui.csproj", "{92054529-EA59-4CD9-9C24-019D8B5A0867}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9C026DA7-481D-43C6-8C18-635D69FDB423}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C026DA7-481D-43C6-8C18-635D69FDB423}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C026DA7-481D-43C6-8C18-635D69FDB423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92054529-EA59-4CD9-9C24-019D8B5A0867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92054529-EA59-4CD9-9C24-019D8B5A0867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92054529-EA59-4CD9-9C24-019D8B5A0867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92054529-EA59-4CD9-9C24-019D8B5A0867}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

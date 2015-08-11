@@ -419,7 +419,6 @@ namespace W3SavegameEditor.Savegame.VariableParsers
                             size = 0;
                             return VariableValue<byte[]>.Create(unknown);
                         }
-                        break;
                     }
 
             }
