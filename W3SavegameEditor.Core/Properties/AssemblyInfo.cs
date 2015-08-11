@@ -1,19 +1,15 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows;
 
-[assembly: AssemblyTitle("W3SavegameEditor")]
+[assembly: AssemblyTitle("W3SavegameEditor.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("W3SavegameEditor")]
+[assembly: AssemblyProduct("W3SavegameEditor.Core")]
 [assembly: AssemblyCopyright("Copyright ©  2015 Atvaark")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, 
-    ResourceDictionaryLocation.SourceAssembly
-)]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: Guid("d8fcf5d3-2435-4aca-b66f-0be951f7a4fc")]
+[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyFileVersion("0.1.0.0")]
