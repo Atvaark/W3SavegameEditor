@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -107,17 +108,30 @@ namespace W3SavegameEditor.ViewModels
                 });
         }
 
-        private static VariableModel ToVariableModel(Variable v)
+
+        private static VariableModel ToVariableModel(Variable v, int i)
         {
             var set = v as VariableSet;
             var children = set == null
                 ? new ObservableCollection<VariableModel>()
                 : new ObservableCollection<VariableModel>(set.Variables.Select(ToVariableModel));
 
+            var typed = v as TypedVariable;
+            var type = typed == null
+                ? "None"
+                : typed.Type;
+
+            var value = typed == null || typed.Value == null
+                ? ""
+                : typed.Value.ToString();
+
             return new VariableModel
             {
+                Index = i,
                 Name = v == null ? "" : v.Name,
-                Value = v == null ? "" : v.ToString(),
+                Type = type,
+                Value = value,
+                DebugString = v == null ? "" : v.ToString(),
                 Children = children
             };
         }

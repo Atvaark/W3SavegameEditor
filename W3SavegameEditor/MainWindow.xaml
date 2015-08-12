@@ -18,16 +18,16 @@
     </controls:MetroWindow.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="19*"/>
-            <RowDefinition Height="214*"/>
-            <RowDefinition Height="12*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="425*"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150*"/>
-            <ColumnDefinition Width="240*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="500*"/>
         </Grid.ColumnDefinitions>
         <Button Content="Refresh" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Command="{Binding InitializeSavegames, Mode=OneWay}" />
-        <DataGrid x:Name="SavegameGrid" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Height="408" Width="285" Margin="10,10,0,0" ItemsSource="{Binding Savegames}" AutoGenerateColumns="False" SelectionMode="Single" SelectedItem="{Binding SelectedSavegame}">
+        <DataGrid x:Name="SavegameGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Margin="10,10,10,10" ItemsSource="{Binding Savegames}" AutoGenerateColumns="False" SelectionMode="Single" SelectedItem="{Binding SelectedSavegame}">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Name}" ClipboardContentBinding="{x:Null}" Header="Name" CanUserResize="False" IsReadOnly="True"/>
             </DataGrid.Columns>
@@ -37,7 +37,7 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </DataGrid>
-        <TabControl Grid.Column="1" HorizontalAlignment="Left" Height="467" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Top" Width="477" DataContext="{Binding SelectedSavegame}">
+        <TabControl Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding SelectedSavegame}">
             <TabItem Header="Info" HorizontalAlignment="Left" Width="58">
                 <Grid>
                     <Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
@@ -53,7 +53,7 @@
                     <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,103,0,0" TextWrapping="Wrap" Text="{Binding Data.Variables.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Variables Tree">
+            <!--<TabItem Header="Variables Tree">
                 <Grid>
                     <TreeView HorizontalAlignment="Left" Height="398" Margin="0,10,0,0" VerticalAlignment="Top" Width="457" ItemsSource="{Binding Data.Variables}"
 						VirtualizingPanel.IsVirtualizing = "True"
@@ -66,13 +66,17 @@
                         </TreeView.Resources>
                     </TreeView>
                 </Grid>
-            </TabItem>
-            <TabItem Header="Variables Grid">
+            </TabItem>-->
+            <TabItem Header="Variables">
                 <Grid>
-                    <DataGrid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="398" Width="447" ItemsSource="{Binding Data.Variables}" AutoGenerateColumns="False" >
+                    <DataGrid Margin="10,10,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding Data.Variables}" AutoGenerateColumns="False" >
                         <DataGrid.Columns>
-                            <DataGridTextColumn Binding="{Binding Name}"  Header="Name"/>
-                            <DataGridTextColumn Binding="{Binding Value}"  Header="Value"/>
+                            <DataGridTextColumn Binding="{Binding Index, Mode=OneWay}"  Header="Index"/>
+                            <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}"  Header="Name"/>
+                            <DataGridTextColumn Binding="{Binding Type, Mode=OneWay}"  Header="Type"/>
+                            <DataGridTextColumn Binding="{Binding Value, Mode=OneWay}"  Header="Value"/>
+                            <DataGridTextColumn Binding="{Binding DebugString, Mode=OneWay}"  Header="Debug"/>
+                            <DataGridTextColumn Binding="{Binding Children.Count, Mode=OneWay}"  Header="Children"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

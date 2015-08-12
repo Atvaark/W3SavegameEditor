@@ -7,24 +7,24 @@
 
     public class VariableValue<T> : VariableValue
     {
-        public override object Object
-        {
-            get { return Value; }
-        }
-
         public T Value { get; set; }
-
-        public override string ToString()
-        {
-            return Value.ToString();
-        }
-
         public static VariableValue<T> Create(T value)
         {
             return new VariableValue<T>
             {
                 Value = value
             };
+        }
+
+        public override object Object
+        {
+            get { return Value; }
+        }
+
+
+        public override string ToString()
+        {
+            return Value.ToString();
         }
     }
 
@@ -72,8 +72,13 @@
                 Value = new object[length]
             };
         }
+
+        public override string ToString()
+        {
+            return "VariableArrayValue[" + Length + "]";
+        }
     }
-    
+
     public class VariableHandleValue<T> : VariableValue<T>
     {
         public new static VariableHandleValue<T> Create(T value)
