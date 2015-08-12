@@ -63,6 +63,7 @@
     <Compile Include="DelegateCommand.cs" />
     <Compile Include="Model\SavegameDataModel.cs" />
     <Compile Include="Model\SavegameModel.cs" />
+    <Compile Include="Model\VariableModel.cs" />
     <Compile Include="ViewModels\SavegameViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

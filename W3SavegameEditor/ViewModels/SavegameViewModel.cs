@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using W3SavegameEditor.Core.Common;
@@ -100,7 +101,11 @@ namespace W3SavegameEditor.ViewModels
                             Version2 = file.TypeCode2,
                             Version3 = file.TypeCode3,
                             VariableNames = new ObservableCollection<string>(file.VariableNames),
-                            Variables = new ObservableCollection<Variable>(file.Variables)
+                            Variables = new ObservableCollection<VariableModel>(file.Variables.Select(v => new VariableModel
+                            {
+                               Name = v == null ? "" : v.Name,
+                               Value = v == null ? "" : v.ToString()
+                            }))
                         }
                     };
                 });

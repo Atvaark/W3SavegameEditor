@@ -11,6 +11,6 @@ namespace W3SavegameEditor.Model
 
         public ObservableCollection<string> VariableNames { get; set; }
 
-        public ObservableCollection<Variable> Variables { get; set; }
+        public ObservableCollection<VariableModel> Variables { get; set; }
     }
 }

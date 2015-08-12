@@ -37,7 +37,7 @@
         </DataGrid>
         <TabControl Grid.Column="1" HorizontalAlignment="Left" Height="467" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Top" Width="477" DataContext="{Binding SelectedSavegame}">
             <TabItem Header="Info" HorizontalAlignment="Left" Width="58">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <Label  HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="245" Text="{Binding Name}"/>
@@ -52,15 +52,16 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Variables">
-                <Grid Background="#FFE5E5E5">
+                <Grid>
                     <DataGrid HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="398" Width="447" ItemsSource="{Binding Data.Variables}" AutoGenerateColumns="False" >
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Name}"  Header="Name"/>
+                            <DataGridTextColumn Binding="{Binding Value}"  Header="Value"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
         </TabControl>
-        <controls:MetroProgressBar Grid.Column="1" HorizontalAlignment="Left" Margin="5,1,0,0" Grid.Row="2" VerticalAlignment="Top" Width="467" Height="18" Maximum="{Binding Progress.Max}" Value="{Binding Progress.Value}" IsIndeterminate="{Binding Progress.Indeterministic}"   Style="{DynamicResource MetroProgressBar}" Visibility="{Binding Progress.Running, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <controls:MetroProgressBar Grid.Column="1" HorizontalAlignment="Left" Margin="5,1,0,0" Grid.Row="2" VerticalAlignment="Top" Width="467" Height="18" Maximum="{Binding Progress.Max}" Value="{Binding Progress.Value}" IsIndeterminate="{Binding Progress.Indeterministic}" Style="{DynamicResource MetroProgressBar}" Visibility="{Binding Progress.Running, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </controls:MetroWindow>
