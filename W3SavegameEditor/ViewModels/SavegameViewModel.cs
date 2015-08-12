@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using W3SavegameEditor.Core.Common;
 using W3SavegameEditor.Core.Savegame;
 using W3SavegameEditor.Core.Savegame.Variables;
 using W3SavegameEditor.Model;
@@ -12,25 +13,7 @@ namespace W3SavegameEditor.ViewModels
 {
     public class SavegameViewModel : INotifyPropertyChanged
     {
-        private class OpenSavegameProgress : IProgress<Tuple<long, long>>
-        {
-            private readonly SavegameViewModel _viewModel;
-
-            public OpenSavegameProgress(SavegameViewModel viewModel)
-            {
-                _viewModel = viewModel;
-            }
-
-            public void Report(Tuple<long, long> value)
-            {
-                _viewModel.ProgressValue = value.Item1;
-                _viewModel.ProgressMax = value.Item2;
-            }
-        }
-
         private SavegameModel _selectedSavegame;
-        private long _progressMax;
-        private long _progressValue;
 
         public ObservableCollection<SavegameModel> Savegames { get; set; }
 
@@ -50,31 +33,7 @@ namespace W3SavegameEditor.ViewModels
             }
         }
 
-        public long ProgressMax
-        {
-            get { return _progressMax; }
-            set
-            {
-                if (_progressMax != value)
-                {
-                    _progressMax = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public long ProgressValue
-        {
-            get { return _progressValue; }
-            set
-            {
-                if (_progressValue != value)
-                {
-                    _progressValue = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        public ReadSavegameProgress Progress { get; set; }
 
         public ICommand InitializeSavegames { get; private set; }
 
@@ -85,9 +44,7 @@ namespace W3SavegameEditor.ViewModels
             InitializeSavegames = new DelegateCommand(ExecuteInitializeSavegameList);
             OpenSavegame = new DelegateCommand(ExecuteOpenSavegame);
             Savegames = new ObservableCollection<SavegameModel>();
-            ProgressValue = 0;
-            ProgressMax = 1;
-
+            Progress = new ReadSavegameProgress();
             ExecuteInitializeSavegameList(null);
         }
 
@@ -129,12 +86,9 @@ namespace W3SavegameEditor.ViewModels
                 throw new ArgumentException("parameter");
             }
 
-            SavegameFile.ReadAsync(savegame.Path, new OpenSavegameProgress(this))
+            SavegameFile.ReadAsync(savegame.Path, Progress)
                 .ContinueWith(t =>
                 {
-                    ProgressValue = 0;
-                    ProgressMax = 1;
-                    
                     var file = t.Result;
                     SelectedSavegame = new SavegameModel
                     {

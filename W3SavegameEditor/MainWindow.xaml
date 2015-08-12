@@ -8,6 +8,9 @@
     Title="W3SavegameEditor"
         Height="520"
         Width="800">
+    <controls:MetroWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </controls:MetroWindow.Resources>
     <controls:MetroWindow.DataContext>
         <viewModels:SavegameViewModel/>
     </controls:MetroWindow.DataContext>
@@ -58,6 +61,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <controls:MetroProgressBar  Grid.Column="1" HorizontalAlignment="Left" Margin="5,1,0,0" Grid.Row="2" VerticalAlignment="Top" Width="467" Height="18" Maximum="{Binding ProgressMax}" Value="{Binding ProgressValue}" Style="{DynamicResource MetroProgressBar}"/>
+        <controls:MetroProgressBar Grid.Column="1" HorizontalAlignment="Left" Margin="5,1,0,0" Grid.Row="2" VerticalAlignment="Top" Width="467" Height="18" Maximum="{Binding Progress.Max}" Value="{Binding Progress.Value}" IsIndeterminate="{Binding Progress.Indeterministic}"   Style="{DynamicResource MetroProgressBar}" Visibility="{Binding Progress.Running, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </controls:MetroWindow>

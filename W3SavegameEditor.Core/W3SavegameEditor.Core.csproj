@@ -53,6 +53,8 @@
     <Compile Include="ChunkedLz4\ChunkedLz4FileHeader.cs" />
     <Compile Include="ChunkedLz4\ChunkedLz4FileTable.cs" />
     <Compile Include="ChunkedLz4\Lz4Chunk.cs" />
+    <Compile Include="Common\IReadSavegameProgress.cs" />
+    <Compile Include="Common\ReadSavegameProgress.cs" />
     <Compile Include="Exceptions\ParseVariableException.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

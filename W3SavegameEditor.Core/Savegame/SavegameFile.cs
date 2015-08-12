@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using W3SavegameEditor.Core.ChunkedLz4;
+using W3SavegameEditor.Core.Common;
 using W3SavegameEditor.Core.Exceptions;
 using W3SavegameEditor.Core.Savegame.VariableParsers;
 using W3SavegameEditor.Core.Savegame.Variables;
@@ -51,34 +52,34 @@ namespace W3SavegameEditor.Core.Savegame
 
         public static Task<SavegameFile> ReadAsync(
             string path,
-            IProgress<Tuple<long, long>> progress = null)
+            IReadSavegameProgress progress = null)
         {
             return Task.Run(() => Read(path, progress));
         }
 
         public static SavegameFile Read(
             string path,
-            IProgress<Tuple<long, long>> progress = null)
+            IReadSavegameProgress progress = null)
         {
 
+            if (progress != null) progress.Report(true, true, 0, 0);
             using (var compressedInputStream = File.OpenRead(path))
             using (var inputStream = ChunkedLz4File.Decompress(compressedInputStream))
             using (var reader = new BinaryReader(inputStream, Encoding.ASCII, true))
             {
                 var savegameFile = new SavegameFile();
-                if (progress != null) progress.Report(new Tuple<long, long>(0, 1));
                 savegameFile.ReadHeader(reader);
                 savegameFile.ReadFooter(reader);
                 savegameFile.ReadStringTable(reader);
                 savegameFile.ReadVariableTable(reader);
-
-                if (progress != null) progress.Report(new Tuple<long, long>(0, savegameFile.VariableTableEntries.Length));
+                if (progress != null) progress.Report(true, false, 0, savegameFile.VariableTableEntries.Length);
                 savegameFile.ReadVariables(reader, progress);
+                if (progress != null) progress.Report(false, false, 0, 0);
                 return savegameFile;
             }
         }
 
-        private void ReadVariables(BinaryReader reader, IProgress<Tuple<long, long>> progress)
+        private void ReadVariables(BinaryReader reader, IReadSavegameProgress progress)
         {
             var parser = new VariableParser(VariableNames);
             var parsers = new List<VariableParserBase>
@@ -101,6 +102,8 @@ namespace W3SavegameEditor.Core.Savegame
                 try
                 {
                     var size = VariableTableEntries[i].Size;
+                    
+                    // TODO: Add a max recursion parameter to stop stackoverflows for the moment. 
                     variables[i] = parser.Parse(reader, ref size);
                 }
                 catch (ParseVariableException e)
@@ -112,7 +115,7 @@ namespace W3SavegameEditor.Core.Savegame
                     Debug.WriteLine(ex);
                 }
 
-                if (i % 250 == 0 && progress != null) progress.Report(new Tuple<long, long>(i, VariableTableEntries.Length));
+                if (i % 250 == 0 && progress != null) progress.Report(true, false, i, VariableTableEntries.Length);
             }
 
             Variables = variables;
