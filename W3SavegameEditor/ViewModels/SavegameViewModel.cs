@@ -8,7 +8,7 @@ using System.Windows.Input;
 using W3SavegameEditor.Core.Common;
 using W3SavegameEditor.Core.Savegame;
 using W3SavegameEditor.Core.Savegame.Variables;
-using W3SavegameEditor.Model;
+using W3SavegameEditor.Models;
 
 namespace W3SavegameEditor.ViewModels
 {
@@ -101,14 +101,25 @@ namespace W3SavegameEditor.ViewModels
                             Version2 = file.TypeCode2,
                             Version3 = file.TypeCode3,
                             VariableNames = new ObservableCollection<string>(file.VariableNames),
-                            Variables = new ObservableCollection<VariableModel>(file.Variables.Select(v => new VariableModel
-                            {
-                               Name = v == null ? "" : v.Name,
-                               Value = v == null ? "" : v.ToString()
-                            }))
+                            Variables = new ObservableCollection<VariableModel>(file.Variables.Select(ToVariableModel))
                         }
                     };
                 });
+        }
+
+        private static VariableModel ToVariableModel(Variable v)
+        {
+            var set = v as VariableSet;
+            var children = set == null
+                ? new ObservableCollection<VariableModel>()
+                : new ObservableCollection<VariableModel>(set.Variables.Select(ToVariableModel));
+
+            return new VariableModel
+            {
+                Name = v == null ? "" : v.Name,
+                Value = v == null ? "" : v.ToString(),
+                Children = children
+            };
         }
     }
 }

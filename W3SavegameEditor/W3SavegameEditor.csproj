@@ -61,9 +61,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DelegateCommand.cs" />
-    <Compile Include="Model\SavegameDataModel.cs" />
-    <Compile Include="Model\SavegameModel.cs" />
-    <Compile Include="Model\VariableModel.cs" />
+    <Compile Include="Models\SavegameDataModel.cs" />
+    <Compile Include="Models\SavegameModel.cs" />
+    <Compile Include="Models\VariableModel.cs" />
     <Compile Include="ViewModels\SavegameViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

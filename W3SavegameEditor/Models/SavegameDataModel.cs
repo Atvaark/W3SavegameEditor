@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using W3SavegameEditor.Core.Savegame.Variables;
 
-namespace W3SavegameEditor.Model
+namespace W3SavegameEditor.Models
 {
     public class SavegameDataModel
     {
