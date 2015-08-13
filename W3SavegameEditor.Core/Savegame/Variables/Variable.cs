@@ -4,6 +4,10 @@
     {
         public string Name { get; set; }
 
+        public int Size { get; set; }
+
+        public int TokenSize { get; set; }
+
         public Variable()
         {
             Name = "None";

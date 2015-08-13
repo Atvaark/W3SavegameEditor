@@ -339,7 +339,9 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                 case "ESignType":
                 case "EVehicleSlot":
                 case "SBuffImmunity":
+                case "SGameplayFact":
                 case "SGlossaryImageOverride":
+                case "SRadialSlotDef":
                 case "SItemUniqueId":
                 case "SRewardMultiplier":
                 case "W3AbilityManager":

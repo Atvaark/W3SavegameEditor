@@ -12,11 +12,13 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
 
         public override OpVariable ParseImpl(BinaryReader reader, ref int size)
         {
-            short nameIndex = reader.ReadInt16();
-            string name = Names[nameIndex - 1];
-            short typeIndex = reader.ReadInt16();
-            string type = Names[typeIndex - 1];
+            ushort nameIndex = reader.ReadUInt16();
+            ushort typeIndex = reader.ReadUInt16();
             size -= 2 * sizeof(short);
+            
+            // BUG: Can read invalid indices
+            string name = nameIndex - 1 < Names.Length ? Names[nameIndex - 1] : "Unknown";
+            string type = typeIndex - 1 < Names.Length ?  Names[typeIndex - 1] : "Unknown";
 
             var value = ReadValue(reader, type, ref size);
 

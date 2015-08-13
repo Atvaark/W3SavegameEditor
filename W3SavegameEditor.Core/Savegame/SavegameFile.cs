@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using W3SavegameEditor.Core.ChunkedLz4;
@@ -82,29 +83,50 @@ namespace W3SavegameEditor.Core.Savegame
         private void ReadVariables(BinaryReader reader, IReadSavegameProgress progress)
         {
             var parser = new VariableParser(VariableNames);
+
+            // TODO: Use while loops in each of the recursive parsers
             var parsers = new List<VariableParserBase>
             {
                 new ManuVariableParser(),
                 new OpVariableParser(),
-                new SsVariableParser(parser),
                 new VlVariableParser(),
-                new BsVariableParser(parser),
-                new BlckVariableParser(parser),
                 new AvalVariableParser(),
-                new PorpVariableParser()
+                new PorpVariableParser(),
+                new SxapVariableParser(),
+                new SsVariableParser(parser),
+                new BsVariableParser(parser),
+                new BlckVariableParser(parser)
             };
             parser.RegisterParsers(parsers);
 
             Variable[] variables = new Variable[VariableTableEntries.Length];
             for (int i = 0; i < VariableTableEntries.Length; i++)
             {
+                // Calculate the size of the next token
+                var size = VariableTableEntries[i].Size;
+                int tokenSize;
+
+                // There is a hidden variable before the last one
+                if (i < VariableTableEntries.Length - 2)
+                {
+                    tokenSize = VariableTableEntries[i + 1].Offset - VariableTableEntries[i].Offset;
+                }
+                else
+                {
+                    tokenSize = VariableTableEntries[i].Size;
+                }
+
                 reader.BaseStream.Position = VariableTableEntries[i].Offset;
                 try
                 {
-                    var size = VariableTableEntries[i].Size;
-                    
-                    // TODO: Add a max recursion parameter to stop stackoverflows for the moment. 
-                    variables[i] = parser.Parse(reader, ref size);
+                    // Parsing and tokenizing
+                    var readTokenSize = tokenSize;
+                    var variable = parser.Parse(reader, ref readTokenSize);
+                    variable.Size = size;
+                    variable.TokenSize = tokenSize;
+                    variables[i] = variable;
+
+                    // TODO: Create and use a referencer
                 }
                 catch (ParseVariableException e)
                 {
@@ -134,7 +156,9 @@ namespace W3SavegameEditor.Core.Savegame
                     Size = reader.ReadInt32()
                 };
             }
-            VariableTableEntries = entires;
+
+            // Order all variables by their offset to calculate their actual size.
+            VariableTableEntries = entires.OrderBy(e => e.Offset).ToArray();
         }
 
         private void ReadFooter(BinaryReader reader)

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using W3SavegameEditor.Core.Savegame.Variables;
 
@@ -27,51 +26,12 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
             short nameStringIndex = reader.ReadInt16();
             string name = Names[nameStringIndex - 1];
             size -= sizeof(short);
-
-            // HACK: Huge sections (200000 bytes+) will cause a stackoverflow
-            switch (name)
-            {
-                case "CJournalManager":
-                case "JActiveEntries":
-                case "communities":
-                case "community":
-                case "stubs":
-                    return new BsVariable
-                    {
-                        Name = name,
-                        Variables = new Variable[0]
-                    };
-            }
-
-            List<Variable> variables = new List<Variable>();
-            Variable debugLastVariable = null;
-            int debugVariableIndex = 0;
-            long debugLoopStartPos = reader.BaseStream.Position;
-            while (size > 0)
-            {
-                // HACK: This is just for easy debugging.
-                if (debugLoopStartPos == 0 && debugVariableIndex == 0)
-                {
-
-                }
-
-                long variableStartPosition = reader.BaseStream.Position;
-                var variable = _parser.Parse(reader, ref size);
-                variables.Add(variable);
-
-                if (variable.GetType() == typeof(UnknownVariable))
-                {
-                    break;
-                }
-                debugLastVariable = variable;
-                debugVariableIndex++;
-                Debug.Assert(reader.BaseStream.Position != variableStartPosition);
-            }
-
+            Debug.Assert(size == 0);
+            
             return new BsVariable
             {
                 Name = name,
-                Variables = variables.ToArray()
+                Variables = new Variable[0]
             };
         }
     }

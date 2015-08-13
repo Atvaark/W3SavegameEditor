@@ -66,6 +66,7 @@
     <Compile Include="Savegame\VariableParsers\AvalVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\BlckVariableParser.cs" />
     <Compile Include="Savegame\VariableParsers\PorpVariableParser.cs" />
+    <Compile Include="Savegame\VariableParsers\SxapVariableParser.cs" />
     <Compile Include="Savegame\Variables\AvalVariable.cs" />
     <Compile Include="Savegame\Variables\BlckVariable.cs" />
     <Compile Include="Savegame\Variables\BsVariable.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Savegame\Variables\OpVariable.cs" />
     <Compile Include="Savegame\Variables\PorpVariable.cs" />
     <Compile Include="Savegame\Variables\SsVariable.cs" />
+    <Compile Include="Savegame\Variables\SxapVariable.cs" />
     <Compile Include="Savegame\Variables\TypedVariable.cs" />
     <Compile Include="Savegame\Variables\VariableSet.cs" />
     <Compile Include="Savegame\SavegameFile.cs" />
