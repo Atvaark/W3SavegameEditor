@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using W3SavegameEditor.Core.Common;
 using W3SavegameEditor.Core.Savegame;
 using W3SavegameEditor.Core.Savegame.Variables;
@@ -51,7 +53,7 @@ namespace W3SavegameEditor.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
+
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             var handler = PropertyChanged;
@@ -67,10 +69,13 @@ namespace W3SavegameEditor.ViewModels
 
             foreach (var filePath in filesPaths)
             {
+                var thumbnailFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".png");
+
                 Savegames.Add(new SavegameModel
                 {
                     Name = Path.GetFileName(filePath),
-                    Path = filePath
+                    Path = filePath,
+                    ThumbnailPath = thumbnailFilePath
                 });
             }
         }
@@ -87,7 +92,7 @@ namespace W3SavegameEditor.ViewModels
             {
                 throw new ArgumentException("parameter");
             }
-
+            
             SavegameFile.ReadAsync(savegame.Path, Progress)
                 .ContinueWith(t =>
                 {

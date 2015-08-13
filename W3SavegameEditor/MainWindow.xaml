@@ -39,18 +39,22 @@
         </DataGrid>
         <TabControl Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.RowSpan="2" DataContext="{Binding SelectedSavegame}">
             <TabItem Header="Info" HorizontalAlignment="Left" Width="58">
-                <Grid>
+                <Grid Background="#252525">
                     <Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <Label  HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="245" Text="{Binding Name}"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="81,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="245" Text="{Binding Name}"/>
                     <Label Content="Version" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version1, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
-                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="197,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version2, Mode=OneWay}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="1.641,0.422"/>
-                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="322,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version3, Mode=OneWay}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="1.641,0.422"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="81,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version1, Mode=OneWay}" VerticalAlignment="Top" Width="120"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="206,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version2, Mode=OneWay}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="1.641,0.422"/>
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="331,41,0,0" TextWrapping="Wrap" Text="{Binding Data.Version3, Mode=OneWay}" VerticalAlignment="Top" Width="120" RenderTransformOrigin="1.641,0.422"/>
                     <Label Content="Names" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,72,0,0" TextWrapping="Wrap" Text="{Binding Data.VariableNames.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="81,72,0,0" TextWrapping="Wrap" Text="{Binding Data.VariableNames.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
                     <Label Content="Variables" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
-                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="72,103,0,0" TextWrapping="Wrap" Text="{Binding Data.Variables.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
+                    <TextBox  HorizontalAlignment="Left" Height="23" Margin="81,103,0,0" TextWrapping="Wrap" Text="{Binding Data.Variables.Count, Mode=OneWay}" VerticalAlignment="Top" Width="120" />
+                    <!--<Label Content="Thumbnail" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top"/>-->
+                    <!--<Border BorderThickness="1" BorderBrush="White" Height="128" Width="228" Margin="81,134,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left">-->
+                    <!--<Image Height="128" Width="228" Margin="81,134,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Source="{Binding ThumbnailPath}"/>-->
+                    <!--</Border>-->
                 </Grid>
             </TabItem>
             <!--<TabItem Header="Variables Tree">
@@ -69,7 +73,7 @@
             </TabItem>-->
             <TabItem Header="Variables">
                 <Grid>
-                    <DataGrid Margin="10,10,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding Data.Variables}" AutoGenerateColumns="False" >
+                    <DataGrid Margin="10,10,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" AutoGenerateColumns="False" ItemsSource="{Binding Data.Variables}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Binding="{Binding Index, Mode=OneWay}"  Header="Index"/>
                             <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}"  Header="Name"/>
@@ -78,6 +82,20 @@
                             <DataGridTextColumn Binding="{Binding DebugString, Mode=OneWay}"  Header="Debug"/>
                             <DataGridTextColumn Binding="{Binding Children.Count, Mode=OneWay}"  Header="Children"/>
                         </DataGrid.Columns>
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Children}" >
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding Index, Mode=OneWay}"  Header="Index"/>
+                                        <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}"  Header="Name"/>
+                                        <DataGridTextColumn Binding="{Binding Type, Mode=OneWay}"  Header="Type"/>
+                                        <DataGridTextColumn Binding="{Binding Value, Mode=OneWay}"  Header="Value"/>
+                                        <DataGridTextColumn Binding="{Binding DebugString, Mode=OneWay}"  Header="Debug"/>
+                                        <DataGridTextColumn Binding="{Binding Children.Count, Mode=OneWay}"  Header="Children"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
                     </DataGrid>
                 </Grid>
             </TabItem>

@@ -6,6 +6,8 @@
 
         public string Path { get; set; }
 
+        public string ThumbnailPath { get; set; }
+
         public SavegameDataModel Data { get; set; }
     }
 }
