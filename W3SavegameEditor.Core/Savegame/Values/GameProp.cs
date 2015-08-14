@@ -1,4 +1,5 @@
 ﻿using System;
+using W3SavegameEditor.Core.Savegame.Values.Engine;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {
@@ -21,8 +22,7 @@ namespace W3SavegameEditor.Core.Savegame.Values
 
         [CName("gameplayFactsForRemoval")]
         public SGameplayFactRemoval[] GameplayFactsForRemoval { get; set; }
-
-
+        
         [CName("gameplayFacts")]
         public SGameplayFact[] GameplayFacts { get; set; }
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using W3SavegameEditor.Core.Exceptions;
 using W3SavegameEditor.Core.Savegame.Values;
+using W3SavegameEditor.Core.Savegame.Values.Engine;
 using W3SavegameEditor.Core.Savegame.Variables;
 
 namespace W3SavegameEditor.Core.Savegame.VariableParsers
@@ -205,9 +206,9 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                         var value = new EulerAngles
                         {
                             Unknown1 = unknown1,
-                            Unknown2 = unknown2,
-                            Unknown3 = unknown3,
-                            Unknown4 = unknown4,
+                            Pitch = unknown2,
+                            Yaw = unknown3,
+                            Roll = unknown4,
                         };
                         return VariableValue<EulerAngles>.Create(value);
                     }

@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Core.Savegame.Values
+﻿using W3SavegameEditor.Core.Savegame.Values.Engine;
+
+namespace W3SavegameEditor.Core.Savegame.Values
 {
     [CName("timerManager")]
     public class TimerManager
