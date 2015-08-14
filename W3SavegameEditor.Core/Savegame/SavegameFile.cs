@@ -75,11 +75,12 @@ namespace W3SavegameEditor.Core.Savegame
                 savegameFile.ReadVariableTable(reader);
                 if (progress != null) progress.Report(true, false, 0, savegameFile.VariableTableEntries.Length);
                 savegameFile.ReadVariables(reader, progress);
+                savegameFile.ReferenceVariable(reader, progress);
                 if (progress != null) progress.Report(false, false, 0, 0);
                 return savegameFile;
             }
         }
-
+        
         private void ReadVariables(BinaryReader reader, IReadSavegameProgress progress)
         {
             var parser = new VariableParser(VariableNames);
@@ -125,8 +126,6 @@ namespace W3SavegameEditor.Core.Savegame
                     variable.Size = size;
                     variable.TokenSize = tokenSize;
                     variables[i] = variable;
-
-                    // TODO: Create and use a referencer
                 }
                 catch (ParseVariableException e)
                 {
@@ -141,6 +140,32 @@ namespace W3SavegameEditor.Core.Savegame
             }
 
             Variables = variables;
+        }
+
+        private void ReferenceVariable(BinaryReader reader, IReadSavegameProgress progress)
+        {
+            List<Variable> referencedVariables = new List<Variable>();
+            for (int i = 0; i < Variables.Length; i++)
+            {
+                Variable currentVariable = Variables[i];
+                VariableSet currentVariableSet = currentVariable as VariableSet;
+                if (currentVariableSet!= null && currentVariable.Size > currentVariable.TokenSize)
+                {
+                    int size = currentVariable.Size - currentVariableSet.TokenSize;
+                    List<Variable> childrenVariables = new List<Variable>();
+                    while (size > 0)
+                    {
+                        Variable nextVariable = Variables[++i];
+                        childrenVariables.Add(nextVariable);
+                        size -= nextVariable.TokenSize;
+                    }
+                    currentVariableSet.Variables = childrenVariables.ToArray();
+                }
+
+                referencedVariables.Add(currentVariable);
+            }
+
+            Variables = referencedVariables.ToArray();
         }
 
         private void ReadVariableTable(BinaryReader reader)

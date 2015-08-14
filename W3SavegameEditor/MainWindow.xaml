@@ -84,7 +84,7 @@
                         </DataGrid.Columns>
                         <DataGrid.RowDetailsTemplate>
                             <DataTemplate>
-                                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Children}" >
+                                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Children}"  EnableRowVirtualization="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Binding="{Binding Index, Mode=OneWay}"  Header="Index"/>
                                         <DataGridTextColumn Binding="{Binding Name, Mode=OneWay}"  Header="Name"/>
