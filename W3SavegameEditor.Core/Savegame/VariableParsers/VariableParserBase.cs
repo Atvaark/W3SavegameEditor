@@ -98,12 +98,16 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                     {
                         short cnameIndex = reader.ReadInt16();
                         size -= sizeof(short);
+                        string value;
                         if (cnameIndex == 0 || cnameIndex > Names.Length)
                         {
-                            break;
+                            value = "Unknown";
+                        }
+                        else
+                        {
+                            value = Names[cnameIndex - 1];
                         }
 
-                        var value = Names[cnameIndex - 1];
                         return VariableValue<string>.Create(value);
                     }
                 case "CGUID":
@@ -423,10 +427,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                             return VariableValue<byte[]>.Create(unknown);
                         }
                     }
-
             }
-
-            return null;
         }
     }
 }

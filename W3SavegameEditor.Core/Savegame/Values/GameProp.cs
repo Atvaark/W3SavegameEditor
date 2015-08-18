@@ -12,6 +12,9 @@ namespace W3SavegameEditor.Core.Savegame.Values
         [CName("nP")]
         public uint Np { get; set; }
 
+
+        /* CR4Game */
+
         [CName("zoneName")]
         public W3Enum ZoneName { get; set; }
 
@@ -30,6 +33,7 @@ namespace W3SavegameEditor.Core.Savegame.Values
         public EntityHandle TutorialManagerHandle { get; set; }
 
         [CName("diffChangePostponed")]
+        [EnumName("EDifficultyMode")]
         public W3Enum DiffChangePostponed { get; set; }
 
         [CName("dynamicallySpawnedBoats")]
@@ -37,6 +41,8 @@ namespace W3SavegameEditor.Core.Savegame.Values
 
         [CName("dynamicallySpawnedBoats")]
         public EntityHandle[] DynamicallySpawnedBoatsToDestroy { get; set; }
+        
+        /* /CR4Game */
 
         [CName("envMgr")]
         public Handle<W3EnvironmentManager> EnvMgr { get; set; }

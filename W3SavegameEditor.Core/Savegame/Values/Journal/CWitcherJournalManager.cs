@@ -1,6 +1,6 @@
 ﻿namespace W3SavegameEditor.Core.Savegame.Values.Journal
 {
-    public class CWitcherJournalManager
+    public class CWitcherJournalManager /* : CJournalManager */
     {
         [CName("JObjectiveCounters")]
         public JObjectiveCounters ObjectiveCounters { get; set; }
