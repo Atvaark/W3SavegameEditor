@@ -83,7 +83,8 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                             // TODO: Analyze how this can be read.
                             byte[] unknown = reader.ReadBytes(size);
                             size = 0;
-                            return VariableValue<byte[]>.Create(unknown);
+
+                            return VariableValue<string>.Create("Unknown (" + Encoding.ASCII.GetString(unknown) + ")");
                         }
                     }
                 case "StringAnsi":

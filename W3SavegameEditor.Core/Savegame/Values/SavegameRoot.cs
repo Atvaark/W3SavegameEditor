@@ -4,6 +4,42 @@ using W3SavegameEditor.Core.Savegame.Values.Journal;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {
+
+    [CSerializable("entry")]
+    public class FactEntry
+    {
+        [CName("value")]
+        public int Value { get; set; }
+        [CName("time")]
+        public double Time { get; set; }
+        [CName("expiryTime")]
+        public double ExpiryTime { get; set; }
+    }
+
+
+    [CSerializable("fact")]
+    public class Fact
+    {
+        [CName("id")]
+        public string Id { get; set; }
+        [CName("expiringCount")]
+        public uint ExpiringCount { get; set; }
+        [CArray("entryCount")]
+        public FactEntry[] Entries { get; set; }
+    }
+
+    [CSerializable("facts")]
+    public class Facts
+    {
+        public Facts()
+        {
+            
+        }
+
+        [CArray]
+        public Fact[] Items { get; set; }
+    }
+
     [CSerializable("SavegameRoot")]
     public class SavegameRoot
     {
@@ -11,7 +47,8 @@ namespace W3SavegameEditor.Core.Savegame.Values
         public CWitcherGameResource WitcherGameResource { get; set; }
         [CName("saveInfo")]
         public SaveInfo SaveInfo { get; set; }
-        public object Facts { get; set; }
+        [CName("facts")]
+        public Facts Facts { get; set; }
         public object QuestSystem { get; set; }
         public object Community { get; set; }
         public object Attitudes { get; set; }

@@ -1,5 +1,4 @@
-﻿using System.CodeDom;
-using W3SavegameEditor.Core.Savegame.Attributes;
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {
@@ -18,11 +17,4 @@ namespace W3SavegameEditor.Core.Savegame.Values
         [CArray]
         public SaveInfoItem[] Items { get; set; }
     }
-
-    //public class SerializableArray<T>
-    //{
-    //    [CName("count")]
-    //    public uint Count { get; set; }
-    //    public T[] Value { get; set; }
-    //}
 }
