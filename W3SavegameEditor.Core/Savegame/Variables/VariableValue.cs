@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Core.Savegame.Variables
+﻿using System;
+
+namespace W3SavegameEditor.Core.Savegame.Variables
 {
     public abstract class VariableValue
     {
@@ -41,17 +43,17 @@
 
     public class VariableArrayValue : VariableValue
     {
-        public object[] Value { get; private set; }
+        public Array Value { get; private set; }
 
         public object this[int i]
         {
             get
             {
-                return Value[i];
+                return Value.GetValue(i);
             }
             set
             {
-                Value[i] = value;
+                Value.SetValue(value, i);
             }
         }
 
@@ -65,11 +67,11 @@
             get { return Value; }
         }
 
-        public static VariableArrayValue Create(int length)
+        public static VariableArrayValue Create(Type type, int length)
         {
             return new VariableArrayValue
             {
-                Value = new object[length]
+                Value = Array.CreateInstance(type, length)
             };
         }
 

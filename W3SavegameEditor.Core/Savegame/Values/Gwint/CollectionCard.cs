@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Core.Savegame.Values.Gwint
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
+
+namespace W3SavegameEditor.Core.Savegame.Values.Gwint
 {
     public class CollectionCard
     {

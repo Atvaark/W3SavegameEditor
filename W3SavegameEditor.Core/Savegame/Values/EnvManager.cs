@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Core.Savegame.Values
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
+
+namespace W3SavegameEditor.Core.Savegame.Values
 {
     [CName("envManager")]
     public class EnvManager
@@ -7,7 +9,7 @@
         public uint SepiaActive { get; set; }
 
         [CName("weatherConditionName")]
-        [CType("CName")]
+        //[CType("CName")]
         public string WeatherConditionName { get; set; }
 
         [CName("QuestEnvDepotPath")]

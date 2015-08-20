@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {
-    [CName("CWitcherGameResource")]
+    [CSerializable("CWitcherGameResource")]
     public class CWitcherGameResource
     {
         [CName("path")]

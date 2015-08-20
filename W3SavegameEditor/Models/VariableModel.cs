@@ -15,5 +15,10 @@ namespace W3SavegameEditor.Models
         public string DebugString { get; set; }
 
         public ObservableCollection<VariableModel> Children { get; set; }
+
+        public override string ToString()
+        {
+            return DebugString;
+        }
     }
 }

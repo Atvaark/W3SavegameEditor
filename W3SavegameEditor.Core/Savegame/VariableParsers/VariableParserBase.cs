@@ -395,14 +395,14 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                         if (type.StartsWith("array:2,0,"))
                         {
                             var arrayElementType = type.Substring("array:2,0,".Length);
-
+                            var arrayElementClrType = GetClrType(arrayElementType);
                             int arrayLength = reader.ReadInt32();
                             size -= sizeof(int);
 
-                            var arrayValue = VariableArrayValue.Create(arrayLength);
+                            var arrayValue = VariableArrayValue.Create(arrayElementClrType, arrayLength);
                             for (int i = 0; i < arrayLength; i++)
                             {
-                                arrayValue[i] = ReadValue(reader, arrayElementType, ref size);
+                                arrayValue[i] = ReadValue(reader, arrayElementType, ref size).Object;
                             }
 
                             return arrayValue;
@@ -428,6 +428,16 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                         }
                     }
             }
+        }
+
+        private Type GetClrType(string type)
+        {
+            switch (type)
+            {
+                case "Uint8":
+                    return typeof (byte);
+            }
+            return typeof (object);
         }
     }
 }

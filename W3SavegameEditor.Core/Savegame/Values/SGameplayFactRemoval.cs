@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Core.Savegame.Values
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
+
+namespace W3SavegameEditor.Core.Savegame.Values
 {
     public class SGameplayFactRemoval
     {

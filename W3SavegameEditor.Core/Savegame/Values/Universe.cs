@@ -1,4 +1,4 @@
-﻿using System.Media;
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
 using W3SavegameEditor.Core.Savegame.Values.Engine;
 
 namespace W3SavegameEditor.Core.Savegame.Values
@@ -15,7 +15,7 @@ namespace W3SavegameEditor.Core.Savegame.Values
         public IdTag Id { get; set; }
 
         [CName("position")]
-        [CType("Vector")]
+        //[CType("Vector")]
         public object Position { get; set; }
 
         [CName("Rotation")]

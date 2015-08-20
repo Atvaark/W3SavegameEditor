@@ -1,4 +1,4 @@
-﻿using System;
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
 using W3SavegameEditor.Core.Savegame.Values.Engine;
 
 namespace W3SavegameEditor.Core.Savegame.Values

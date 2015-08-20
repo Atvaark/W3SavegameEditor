@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using W3SavegameEditor.Core.Common;
 using W3SavegameEditor.Core.Savegame;
 using W3SavegameEditor.Core.Savegame.Variables;
@@ -97,18 +94,19 @@ namespace W3SavegameEditor.ViewModels
                 .ContinueWith(t =>
                 {
                     var file = t.Result;
+                    var savegameDataModel = new SavegameDataModel
+                    {
+                        Version1 = file.TypeCode1,
+                        Version2 = file.TypeCode2,
+                        Version3 = file.TypeCode3,
+                        VariableNames = new ObservableCollection<string>(file.VariableNames),
+                        Variables = new ObservableCollection<VariableModel>(file.Variables.Select(ToVariableModel))
+                    };
                     SelectedSavegame = new SavegameModel
                     {
                         Name = savegame.Name,
                         Path = savegame.Path,
-                        Data = new SavegameDataModel
-                        {
-                            Version1 = file.TypeCode1,
-                            Version2 = file.TypeCode2,
-                            Version3 = file.TypeCode3,
-                            VariableNames = new ObservableCollection<string>(file.VariableNames),
-                            Variables = new ObservableCollection<VariableModel>(file.Variables.Select(ToVariableModel))
-                        }
+                        Data = savegameDataModel
                     };
                 });
         }

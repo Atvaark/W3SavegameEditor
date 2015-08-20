@@ -1,4 +1,6 @@
-﻿namespace W3SavegameEditor.Core.Savegame.Values.Journal
+﻿using W3SavegameEditor.Core.Savegame.Attributes;
+
+namespace W3SavegameEditor.Core.Savegame.Values.Journal
 {
     public class JObjectiveCounters
     {

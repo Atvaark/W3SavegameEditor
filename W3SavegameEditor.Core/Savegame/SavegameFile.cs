@@ -139,6 +139,10 @@ namespace W3SavegameEditor.Core.Savegame
                 if (i % 250 == 0 && progress != null) progress.Report(true, false, i, VariableTableEntries.Length);
             }
 
+
+            var valueParser = new VariableValueParser();
+            var root = valueParser.Parse("SavegameRoot", new Stack<Variable>(variables.Reverse()));
+
             Variables = variables;
         }
 
@@ -180,6 +184,9 @@ namespace W3SavegameEditor.Core.Savegame
                     Offset = reader.ReadInt32(),
                     Size = reader.ReadInt32()
                 };
+
+                //Debug.WriteLine(entires[i]);
+
             }
 
             // Order all variables by their offset to calculate their actual size.

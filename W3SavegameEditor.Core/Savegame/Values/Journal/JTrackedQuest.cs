@@ -1,4 +1,5 @@
 using System;
+using W3SavegameEditor.Core.Savegame.Attributes;
 
 namespace W3SavegameEditor.Core.Savegame.Values.Journal
 {

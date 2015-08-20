@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace W3SavegameEditor.Core.Savegame
+namespace W3SavegameEditor.Core.Savegame.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
     public class CNameAttribute : Attribute
     {
-        private string Name { get; set; }
+        public string Name { get; set; }
 
         public CNameAttribute(string name)
         {
