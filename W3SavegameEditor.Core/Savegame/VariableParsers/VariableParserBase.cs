@@ -60,6 +60,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
             {
                 case "String":
                     {
+                        // TODO: Implement correct variable-length decoding
                         var headerByte = reader.ReadByte();
                         size -= sizeof(byte);
 
