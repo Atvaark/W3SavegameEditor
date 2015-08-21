@@ -1,7 +1,7 @@
 ﻿using W3SavegameEditor.Core.Savegame.Attributes;
 using W3SavegameEditor.Core.Savegame.Values.Gwint;
 using W3SavegameEditor.Core.Savegame.Values.Journal;
-using W3SavegameEditor.Core.Savegame.Values.Quest;
+using W3SavegameEditor.Core.Savegame.Values.Quests;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {

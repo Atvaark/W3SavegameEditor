@@ -16,8 +16,9 @@ namespace W3SavegameEditor.Core.Savegame
 
             public bool IsArray { get; set; }
             public string ArrayCountName { get; set; }
-            public Type ArrayElementType { get; set; }
+            public string ArrayElementName { get; set; }
             public string ArrayElementCType { get; set; }
+            public Type ArrayElementType { get; set; }
 
             public PropertyInfo Info { get; set; }
         }
@@ -36,23 +37,26 @@ namespace W3SavegameEditor.Core.Savegame
             }
         }
 
-        private object Deserialize(string typeName, Type type, Stack<Variable> variables)
+        private static void SkipName(Stack<Variable> variables, string name)
         {
-            if (variables.Peek().Name == typeName)
+            var variable = variables.Peek() as BsVariable;
+            if (variable != null && variable.Name == name)
             {
                 variables.Pop();
             }
-            
+        }
+
+        private object Deserialize(string typeName, Type type, Stack<Variable> variables)
+        {
             var instance = Activator.CreateInstance(type);
+            SkipName(variables, typeName);
+            
             foreach (var serializableProperty in GetNamedOrArrayProperties(type))
             {
                 object propertyValue = null;
                 if (serializableProperty.CType != null)
                 {
-                    if (variables.Peek().Name == serializableProperty.CName)
-                    {
-                        variables.Pop();
-                    }
+                    SkipName(variables, serializableProperty.CName);
 
                     propertyValue = _factories[serializableProperty.CType](variables);
                 }
@@ -63,25 +67,33 @@ namespace W3SavegameEditor.Core.Savegame
                     {
                         continue;
                     }
-
-                    variables.Pop();
-
+                    
                     if (serializableProperty.IsArray && typedVariable.Name == serializableProperty.ArrayCountName)
                     {
+                        variables.Pop();
                         uint count = (uint) typedVariable.Value.Object;
                         var array = Array.CreateInstance(serializableProperty.ArrayElementType, count);
                         for (int i = 0; i < count; i++)
                         {
-                            // TODO: Check the element type name (e.g. CGUID)
-                            var element = serializableProperty.ArrayElementCType == null
-                                ? ((TypedVariable)variables.Pop()).Value.Object
-                                : Deserialize(serializableProperty.ArrayElementCType, serializableProperty.ArrayElementType, variables);
+                            object element;
+                            if (serializableProperty.ArrayElementCType == null)
+                            {
+                                // TODO: Check the element type name (e.g. CGUID)
+                                element = ((TypedVariable) variables.Pop()).Value.Object;
+                            }
+                            else
+                            {
+                                SkipName(variables, serializableProperty.ArrayElementName);
+                                element = Deserialize(serializableProperty.ArrayElementCType, serializableProperty.ArrayElementType, variables);
+                            }
+
                             array.SetValue(element, i);
                         }
                         propertyValue = array;
                     }
                     else if (typedVariable.Name == serializableProperty.CName)
                     {
+                        variables.Pop();
                         propertyValue = typedVariable.Value.Object;
                     }
                 }
@@ -118,6 +130,7 @@ namespace W3SavegameEditor.Core.Savegame
                         CType = cSerializableAttribute != null ? cSerializableAttribute.TypeName : null,
                         IsArray = cArrayAttribute != null,
                         ArrayCountName = cArrayAttribute != null ? cArrayAttribute.CountName : null,
+                        ArrayElementName = cArrayAttribute != null ? cArrayAttribute.ElementName : null,
                         ArrayElementType = cArrayAttribute != null ? property.PropertyType.GetElementType() : null,
                         ArrayElementCType = cArrayElementType != null ? cArrayElementType.TypeName : null,
                         Info = property

@@ -1,7 +1,7 @@
 ﻿using System;
 using W3SavegameEditor.Core.Savegame.Attributes;
 
-namespace W3SavegameEditor.Core.Savegame.Values.Quest
+namespace W3SavegameEditor.Core.Savegame.Values.Quests
 {
     [CSerializable("ExternalDialog")]
     public class ExternalDialog

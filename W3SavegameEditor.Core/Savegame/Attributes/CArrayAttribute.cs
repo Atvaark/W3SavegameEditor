@@ -8,6 +8,7 @@ namespace W3SavegameEditor.Core.Savegame.Attributes
     {
         private const string DefaultCountName = "count";
         public string CountName { get; set; }
+        public string ElementName { get; set; }
 
         public CArrayAttribute() : this(DefaultCountName)
         {
