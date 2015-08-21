@@ -66,7 +66,7 @@ namespace W3SavegameEditor.ViewModels
 
             foreach (var filePath in filesPaths)
             {
-                var thumbnailFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + ".png");
+                var thumbnailFilePath = Path.Combine(Path.GetDirectoryName(filePath) ?? "", Path.GetFileNameWithoutExtension(filePath) + ".png");
 
                 Savegames.Add(new SavegameModel
                 {

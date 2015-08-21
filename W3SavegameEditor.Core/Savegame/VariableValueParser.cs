@@ -31,36 +31,40 @@ namespace W3SavegameEditor.Core.Savegame
             foreach (var serializableType in GetSerializableTypes())
             {
                 var type = serializableType;
-                Func<Stack<Variable>, object> deserializationFunction = (v) => Deserialize(type.Key, type.Value, v);
+                Func<Stack<Variable>, object> deserializationFunction = v => Deserialize(type.Key, type.Value, v);
                 _factories.Add(serializableType.Key, deserializationFunction);
             }
         }
 
-        private object Deserialize(string typeName, Type type, Stack<Variable> v)
+        private object Deserialize(string typeName, Type type, Stack<Variable> variables)
         {
-            var instance = Activator.CreateInstance(type);
-
-            if (v.Peek().Name == typeName)
+            if (variables.Peek().Name == typeName)
             {
-                v.Pop();
+                variables.Pop();
             }
-
+            
+            var instance = Activator.CreateInstance(type);
             foreach (var serializableProperty in GetNamedOrArrayProperties(type))
             {
                 object propertyValue = null;
                 if (serializableProperty.CType != null)
                 {
-                    propertyValue = _factories[serializableProperty.CType](v);
+                    if (variables.Peek().Name == serializableProperty.CName)
+                    {
+                        variables.Pop();
+                    }
+
+                    propertyValue = _factories[serializableProperty.CType](variables);
                 }
                 else
                 {
-                    var typedVariable = v.Peek() as TypedVariable;
+                    var typedVariable = variables.Peek() as TypedVariable;
                     if(typedVariable == null)
                     {
                         continue;
                     }
 
-                    typedVariable = (TypedVariable)v.Pop();
+                    variables.Pop();
 
                     if (serializableProperty.IsArray && typedVariable.Name == serializableProperty.ArrayCountName)
                     {
@@ -68,7 +72,10 @@ namespace W3SavegameEditor.Core.Savegame
                         var array = Array.CreateInstance(serializableProperty.ArrayElementType, count);
                         for (int i = 0; i < count; i++)
                         {
-                            var element = Deserialize(serializableProperty.ArrayElementCType, serializableProperty.ArrayElementType, v);
+                            // TODO: Check the element type name (e.g. CGUID)
+                            var element = serializableProperty.ArrayElementCType == null
+                                ? ((TypedVariable)variables.Pop()).Value.Object
+                                : Deserialize(serializableProperty.ArrayElementCType, serializableProperty.ArrayElementType, variables);
                             array.SetValue(element, i);
                         }
                         propertyValue = array;
@@ -79,7 +86,6 @@ namespace W3SavegameEditor.Core.Savegame
                     }
                 }
 
-
                 serializableProperty.Info.SetValue(instance, propertyValue);
             }
             return instance;
@@ -88,6 +94,11 @@ namespace W3SavegameEditor.Core.Savegame
         public object Parse(string type, Stack<Variable> variables)
         {
             return _factories[type](variables);
+        }
+
+        public T Parse<T>(Stack<Variable> variables)
+        {
+            return (T)Deserialize(null, typeof (T), variables);
         }
 
         private static IEnumerable<VariablePropertyInfo> GetNamedOrArrayProperties(Type serializableType)
@@ -104,11 +115,11 @@ namespace W3SavegameEditor.Core.Savegame
                     yield return new VariablePropertyInfo
                     {
                         CName = cNameAttribute != null ? cNameAttribute.Name : null,
-                        CType = cSerializableAttribute != null ? cSerializableAttribute.Type : null,
+                        CType = cSerializableAttribute != null ? cSerializableAttribute.TypeName : null,
                         IsArray = cArrayAttribute != null,
                         ArrayCountName = cArrayAttribute != null ? cArrayAttribute.CountName : null,
                         ArrayElementType = cArrayAttribute != null ? property.PropertyType.GetElementType() : null,
-                        ArrayElementCType = cArrayElementType != null ? cArrayElementType.Type : null,
+                        ArrayElementCType = cArrayElementType != null ? cArrayElementType.TypeName : null,
                         Info = property
                     };
                 }
@@ -122,7 +133,7 @@ namespace W3SavegameEditor.Core.Savegame
                 var cSerializableAttribute = GetCSerializableAttribute(type);
                 if (cSerializableAttribute != null)
                 {
-                    yield return new KeyValuePair<string, Type>(cSerializableAttribute.Type, type);
+                    yield return new KeyValuePair<string, Type>(cSerializableAttribute.TypeName, type);
                 }
             }
         }

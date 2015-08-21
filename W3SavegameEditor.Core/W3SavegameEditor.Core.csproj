@@ -64,6 +64,10 @@
     <Compile Include="Savegame\Attributes\EnumNameAttribute.cs" />
     <Compile Include="Savegame\Values\AdditionalContent.cs" />
     <Compile Include="Savegame\Values\EntityStateChangeRequests.cs" />
+    <Compile Include="Savegame\Values\Quest\ExternalDialog.cs" />
+    <Compile Include="Savegame\Values\Fact.cs" />
+    <Compile Include="Savegame\Values\FactEntry.cs" />
+    <Compile Include="Savegame\Values\Facts.cs" />
     <Compile Include="Savegame\Values\Gwint\CollectionCard.cs" />
     <Compile Include="Savegame\Values\Journal\CWitcherJournalManager.cs" />
     <Compile Include="Savegame\Values\Gwint\GwintDeck.cs" />
@@ -89,6 +93,8 @@
     <Compile Include="Savegame\Values\Journal\JObjectiveCounter.cs" />
     <Compile Include="Savegame\Values\Journal\JObjectiveCounters.cs" />
     <Compile Include="Savegame\Values\Journal\JTrackedQuest.cs" />
+    <Compile Include="Savegame\Values\Quest\QuestExternalScenePlayer.cs" />
+    <Compile Include="Savegame\Values\Quest\QuestSystem.cs" />
     <Compile Include="Savegame\Values\SavegameRoot.cs" />
     <Compile Include="Savegame\Values\SaveInfo.cs" />
     <Compile Include="Savegame\Values\SaveInfoItem.cs" />

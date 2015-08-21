@@ -5,11 +5,16 @@ namespace W3SavegameEditor.Core.Savegame.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class CSerializableAttribute : Attribute
     {
-        public string Type { get; set; }
+        public string TypeName { get; set; }
 
-        public CSerializableAttribute(string type)
+        /// <summary>
+        /// Flag that symbolizes that the name of the type is guessed.
+        /// </summary>
+        public bool Custom { get; set; }
+
+        public CSerializableAttribute(string typeName)
         {
-            Type = type;
+            TypeName = typeName;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using W3SavegameEditor.Core.ChunkedLz4;
 using W3SavegameEditor.Core.Common;
 using W3SavegameEditor.Core.Exceptions;
+using W3SavegameEditor.Core.Savegame.Values;
 using W3SavegameEditor.Core.Savegame.VariableParsers;
 using W3SavegameEditor.Core.Savegame.Variables;
 
@@ -120,7 +121,7 @@ namespace W3SavegameEditor.Core.Savegame
                 reader.BaseStream.Position = VariableTableEntries[i].Offset;
                 try
                 {
-                    // Parsing and tokenizing
+                    // Tokenizing
                     var readTokenSize = tokenSize;
                     var variable = parser.Parse(reader, ref readTokenSize);
                     variable.Size = size;
@@ -139,10 +140,10 @@ namespace W3SavegameEditor.Core.Savegame
                 if (i % 250 == 0 && progress != null) progress.Report(true, false, i, VariableTableEntries.Length);
             }
 
-
+            // Parsing
             var valueParser = new VariableValueParser();
-            var root = valueParser.Parse("SavegameRoot", new Stack<Variable>(variables.Reverse()));
-
+            var stack = new Stack<Variable>(variables.Reverse());
+            var root = valueParser.Parse<SavegameRoot>(stack);
             Variables = variables;
         }
 

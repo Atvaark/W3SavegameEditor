@@ -1,46 +1,11 @@
 ﻿using W3SavegameEditor.Core.Savegame.Attributes;
 using W3SavegameEditor.Core.Savegame.Values.Gwint;
 using W3SavegameEditor.Core.Savegame.Values.Journal;
+using W3SavegameEditor.Core.Savegame.Values.Quest;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {
-
-    [CSerializable("entry")]
-    public class FactEntry
-    {
-        [CName("value")]
-        public int Value { get; set; }
-        [CName("time")]
-        public double Time { get; set; }
-        [CName("expiryTime")]
-        public double ExpiryTime { get; set; }
-    }
-
-
-    [CSerializable("fact")]
-    public class Fact
-    {
-        [CName("id")]
-        public string Id { get; set; }
-        [CName("expiringCount")]
-        public uint ExpiringCount { get; set; }
-        [CArray("entryCount")]
-        public FactEntry[] Entries { get; set; }
-    }
-
-    [CSerializable("facts")]
-    public class Facts
-    {
-        public Facts()
-        {
-            
-        }
-
-        [CArray]
-        public Fact[] Items { get; set; }
-    }
-
-    [CSerializable("SavegameRoot")]
+    [CSerializable("SavegameRoot", Custom = true)]
     public class SavegameRoot
     {
         [CName("CWitcherGameResource")]
@@ -49,7 +14,8 @@ namespace W3SavegameEditor.Core.Savegame.Values
         public SaveInfo SaveInfo { get; set; }
         [CName("facts")]
         public Facts Facts { get; set; }
-        public object QuestSystem { get; set; }
+        [CName("questSystem")]
+        public QuestSystem QuestSystem { get; set; }
         public object Community { get; set; }
         public object Attitudes { get; set; }
         public object ParentGroups { get; set; }

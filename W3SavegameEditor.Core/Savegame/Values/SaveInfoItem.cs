@@ -2,6 +2,7 @@ using W3SavegameEditor.Core.Savegame.Attributes;
 
 namespace W3SavegameEditor.Core.Savegame.Values
 {
+    [CSerializable("SaveInfoItem", Custom = true)]
     public class SaveInfoItem
     {
         [CName("time")]
