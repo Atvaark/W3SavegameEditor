@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
-using LZ4PCL;
+using K4os.Compression.LZ4;
 
 namespace W3SavegameEditor.Core.ChunkedLz4
 {
@@ -12,23 +13,16 @@ namespace W3SavegameEditor.Core.ChunkedLz4
 
         public int EndOfChunkOffset { get; set; }
 
-        public byte[] Read(Stream inputStream)
+        public Span<byte> Read(Stream inputStream)
         {
-            byte[] inputData = new byte[CompressedChunkSize];
-            byte[] outputData = new byte[DecompressedChunkSize];
-
-            inputStream.Read(inputData, 0, CompressedChunkSize);
-            unsafe
-            {
-                fixed (byte* input = inputData)
-                fixed (byte* output = outputData)
-                {
-                    int bytesDecoded = LZ4Codec.Decode32(input, inputData.Length, output, outputData.Length, true);
-                    Debug.Assert(bytesDecoded == DecompressedChunkSize);
-                }
-
-                Debug.Assert(inputStream.Position == EndOfChunkOffset || EndOfChunkOffset == 0);
-            }
+            Span<byte> inputData = stackalloc byte[CompressedChunkSize];
+            Span<byte> outputData = new byte[DecompressedChunkSize];
+            
+            inputStream.Read(inputData);
+            int bytesDecoded = LZ4Codec.Decode(inputData, outputData);
+            Debug.Assert(bytesDecoded == DecompressedChunkSize);
+            
+            Debug.Assert(inputStream.Position == EndOfChunkOffset || EndOfChunkOffset == 0);
 
             return outputData;
         }

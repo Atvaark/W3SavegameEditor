@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+.vs
 
 # Build results
 [Dd]ebug/
@@ -85,6 +86,9 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+
+# Idea is the platform on which Rider runs
+.idea
 
 # JustCode is a .NET coding addin-in
 .JustCode

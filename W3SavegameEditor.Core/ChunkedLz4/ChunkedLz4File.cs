@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace W3SavegameEditor.Core.ChunkedLz4
             var memoryStream = new MemoryStream(data) { Position = header.HeaderSize };
             foreach (var chunk in table.Chunks)
             {
-                byte[] chunkData = chunk.Read(input);
-                memoryStream.Write(chunkData, 0, chunkData.Length);
+                Span<byte> chunkData = chunk.Read(input);
+                memoryStream.Write(chunkData);
                 Debug.Assert(input.Position == chunk.EndOfChunkOffset || chunk.EndOfChunkOffset == 0);
             }
 
