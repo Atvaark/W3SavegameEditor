@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using W3SavegameEditor.Core.Exceptions;
 using W3SavegameEditor.Core.Savegame.Variables;
 
 namespace W3SavegameEditor.Core.Savegame.VariableParsers
@@ -14,9 +15,19 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
             _parser = parser;
         }
 
-        public override string MagicNumber
+        public override string MagicNumber => "SS";
+
+        public override void Verify(BinaryReader reader, ref int size)
         {
-            get { return "SS"; }
+            base.Verify(reader, ref size);
+
+            var position = reader.BaseStream.Position;
+            var sizeInner = reader.ReadInt32();
+            reader.BaseStream.Position = position;
+            var expectedSize = sizeof(int) + sizeInner;
+
+            if (size != expectedSize)
+                throw new ParseVariableException($"SSVariable: Expected to read {expectedSize} bytes but found {size} at {reader.BaseStream.Position}");
         }
 
         public override SsVariable ParseImpl(BinaryReader reader, ref int size)

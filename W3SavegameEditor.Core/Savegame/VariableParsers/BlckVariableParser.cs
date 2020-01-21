@@ -7,8 +7,6 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
 {
     public class BlckVariableParser : VariableParserBase<BlckVariable>
     {
-        private const string FullMagicNumber = "BLCK";
-
         private readonly VariableParser _parser;
         
         public BlckVariableParser(VariableParser parser)
@@ -16,10 +14,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
             _parser = parser;
         }
 
-        public override string MagicNumber
-        {
-            get { return "BL"; }
-        }
+        public override string MagicNumber => "BLCK";
 
         public override BlckVariable ParseImpl(BinaryReader reader, ref int size)
         {
@@ -49,22 +44,6 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                 Name = name,
                 Variables = variables.ToArray()
             };
-        }
-
-        public override void Verify(BinaryReader reader, ref int size)
-        {
-            var bytesToRead = FullMagicNumber.Length;
-            var magicNumber = reader.ReadString(bytesToRead);
-            if (magicNumber != FullMagicNumber)
-            {
-                throw new ParseVariableException(
-                    string.Format(
-                    "Expeced BLCK but read {0} at {1}",
-                    magicNumber,
-                    reader.BaseStream.Position - 4));
-            }
-
-            size -= bytesToRead;
         }
     }
 }

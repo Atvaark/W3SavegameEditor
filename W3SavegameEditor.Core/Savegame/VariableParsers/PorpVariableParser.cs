@@ -7,12 +7,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
 {
     public class PorpVariableParser : VariableParserBase<PorpVariable>
     {
-        private const string FullMagicNumber = "PORP";
-
-        public override string MagicNumber
-        {
-            get { return "PO"; }
-        }
+        public override string MagicNumber => "PORP";
 
         public override PorpVariable ParseImpl(BinaryReader reader, ref int size)
         {
@@ -38,22 +33,6 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                 Type = type,
                 Value = value
             };
-        }
-
-        public override void Verify(BinaryReader reader, ref int size)
-        {
-            var bytesToRead = FullMagicNumber.Length;
-            var magicNumber = reader.ReadString(bytesToRead);
-            if (magicNumber != FullMagicNumber)
-            {
-                throw new ParseVariableException(
-                    string.Format(
-                    "Expeced PORP but read {0} at {1}",
-                    magicNumber,
-                    reader.BaseStream.Position - 4));
-            }
-
-            size -= bytesToRead;
         }
     }
 }

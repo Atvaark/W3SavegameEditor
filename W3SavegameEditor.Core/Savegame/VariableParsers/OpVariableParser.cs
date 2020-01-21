@@ -5,10 +5,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
 {
     public class OpVariableParser : VariableParserBase<OpVariable>
     {
-        public override string MagicNumber
-        {
-            get { return "OP"; }
-        }
+        public override string MagicNumber => "OP";
 
         public override OpVariable ParseImpl(BinaryReader reader, ref int size)
         {

@@ -6,12 +6,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
 {
     public class ManuVariableParser : VariableParserBase<ManuVariable>
     {
-        private const string FullMagicNumber = "MANU";
-
-        public override string MagicNumber
-        {
-            get { return "MA"; }
-        }
+        public override string MagicNumber => "MANU";
 
         public override ManuVariable ParseImpl(BinaryReader reader, ref int size)
         {
@@ -39,22 +34,6 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
             {
                 Strings = strings
             };
-        }
-
-        public override void Verify(BinaryReader reader, ref int size)
-        {
-            var bytesToRead = FullMagicNumber.Length;
-            var magicNumber = reader.ReadString(bytesToRead);
-            if (magicNumber != FullMagicNumber)
-            {
-                throw new ParseVariableException(
-                    string.Format(
-                    "Expeced MANU but read {0} at {1}",
-                    magicNumber,
-                    reader.BaseStream.Position - 4));
-            }
-
-            size -= bytesToRead;
         }
     }
 }

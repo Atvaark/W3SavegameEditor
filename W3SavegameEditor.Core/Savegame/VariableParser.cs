@@ -40,9 +40,8 @@ namespace W3SavegameEditor.Core.Savegame
         [DebuggerHidden]
         public Variable Parse(BinaryReader reader, ref int size)
         {
-            string magicNumber = reader.PeekString(2);
-            VariableParserBase parser;
-            if (_magicNumberToParserDictionary.TryGetValue(magicNumber, out parser))
+            if (_magicNumberToParserDictionary.TryGetValue(reader.PeekString(4), out var parser) ||
+                _magicNumberToParserDictionary.TryGetValue(reader.PeekString(2), out parser))
             {
                 parser.Verify(reader, ref size);
                 var variable = parser.Parse(reader, ref size);

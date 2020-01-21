@@ -130,10 +130,12 @@ namespace W3SavegameEditor.Core.Savegame
                 }
                 catch (ParseVariableException e)
                 {
+                    variables[i] = new InvalidVariable($"variable[{i}] - {e.Message}");
                     Debug.WriteLine(e.Message);
                 }
                 catch (Exception ex)
                 {
+                    variables[i] = new InvalidVariable($"variable[{i}] - {ex.Message}");
                     Debug.WriteLine(ex);
                 }
 

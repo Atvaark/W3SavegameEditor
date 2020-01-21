@@ -6,13 +6,7 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
 {
     public class SxapVariableParser : VariableParserBase<SxapVariable>
     {
-
-        private const string FullMagicNumber = "SXAP";
-
-        public override string MagicNumber
-        {
-            get { return "SX"; }
-        }
+        public override string MagicNumber => "SXAP";
 
         public override SxapVariable ParseImpl(BinaryReader reader, ref int size)
         {
@@ -27,22 +21,6 @@ namespace W3SavegameEditor.Core.Savegame.VariableParsers
                 TypeCode2 = typeCode2,
                 TypeCode3 = typeCode3
             };
-        }
-
-        public override void Verify(BinaryReader reader, ref int size)
-        {
-            var bytesToRead = FullMagicNumber.Length;
-            var magicNumber = reader.ReadString(bytesToRead);
-            if (magicNumber != FullMagicNumber)
-            {
-                throw new ParseVariableException(
-                    string.Format(
-                    "Expeced SXAP but read {0} at {1}",
-                    magicNumber,
-                    reader.BaseStream.Position - 4));
-            }
-
-            size -= bytesToRead;
         }
     }
 }
